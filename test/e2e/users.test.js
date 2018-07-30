@@ -26,4 +26,14 @@ describe('Auth API', () => {
     it('signs up a user', () => {
         assert.isDefined(token);
     });
+
+    it('can sign in a user', () => {
+        return request
+            .post('/api/users/signin')
+            .send(userData)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.isDefined(body.token);
+            });
+    });
 });

@@ -14,6 +14,12 @@ const badPassword = {
     password: 'myBikeIsAFace'
 };
 
+const badEmail = {
+    name: 'Bikey McBikeface',
+    email: 'bk@bkfc.com',
+    password: 'myBikeIsAFace'
+};
+
 describe('Auth API', () => {
     let token;
     beforeEach(() => dropCollection('users'));
@@ -59,6 +65,16 @@ describe('Auth API', () => {
             .then(res => {
                 assert.equal(res.status, 400);
                 assert.equal(res.body.error, 'Email already in use');
+            });
+    });
+
+    it('gives a 404 on bad email signin', () => {
+        return request
+            .post('/api/users/signin')
+            .send(badEmail)
+            .then(res => {
+                assert.equal(res.status, 401);
+                assert.equal(res.body.error, 'Invalid email or password');
             });
     });
 });

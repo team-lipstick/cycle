@@ -8,6 +8,12 @@ const userData = {
     password: 'myFaceIsABike'
 };
 
+const badPassword = {
+    name: 'Bikey McBikeface',
+    email: 'bikey@bikeface.com',
+    password: 'myBikeIsAFace'
+};
+
 
 describe('Auth API', () => {
     let token;
@@ -34,6 +40,16 @@ describe('Auth API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 assert.isDefined(body.token);
+            });
+    });
+
+    it('fails when given wrong password', () => {
+        return request
+            .post('/api/users/signin')
+            .send(badPassword)
+            .then(res => {
+                assert.equal(res.status, 401);
+                assert.equal(res.body.error, 'Invalid email or password');
             });
     });
 });

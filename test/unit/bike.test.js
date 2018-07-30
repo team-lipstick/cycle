@@ -1,5 +1,5 @@
 const { assert } = require('chai');
-// const { getErrors } = require('./')
+const { getErrors } = require('./helper');
 const { Types } = require('mongoose');
 const Bike = require ('../../lib/models/bike');
 
@@ -28,5 +28,13 @@ describe('Bike model', () => {
     it('validates all required fields', () => {
         const bike = new Bike({});
         const errors = getErrors(bike.validateSync(), 8);
+        assert.equal(errors.manufacturer.kind, 'required');
+        assert.equal(errors.model.kind, 'required');
+        assert.equal(errors.year.kind, 'required');
+        assert.equal(errors.price.kind, 'required');
+        assert.equal(errors.speeds.kind, 'required');
+        assert.equal(errors.gender.kind, 'required');
+        assert.equal(errors.type.kind, 'required');
+        assert.equal(errors.owner.kind, 'required');
     });
 });

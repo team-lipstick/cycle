@@ -22,8 +22,8 @@ describe('Sale model', () => {
                 offer: 95,
                 accepted: true
             }],
-            sold: 
         };
+    
         const sale = new Sale(data);
         const json = sale.toJSON();
 

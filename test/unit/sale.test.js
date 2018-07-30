@@ -1,6 +1,6 @@
 const { assert } = require('chai');
-const { getErrors} = require('./helper');
-const Sale = require('../../lib/model/sale');
+const { getErrors } = require('./helper');
+const Sale = require('../../lib/models/sale');
 const { Types } = require('mongoose');
 
 describe.only('Sale model', () => {

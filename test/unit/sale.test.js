@@ -28,6 +28,7 @@ describe.only('Sale model', () => {
                 date: new Date()
             }
         };
+    
         const sale = new Sale(data);
         const json = sale.toJSON();
         delete json._id;

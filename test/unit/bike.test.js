@@ -1,4 +1,5 @@
 const { assert } = require('chai');
+// const { getErrors } = require('./')
 const { Types } = require('mongoose');
 const Bike = require ('../../lib/models/bike');
 
@@ -24,5 +25,8 @@ describe('Bike model', () => {
         assert.deepEqual(json, data);
     });
 
-    
+    it('validates all required fields', () => {
+        const bike = new Bike({});
+        const errors = getErrors(bike.validateSync(), 8);
+    });
 });

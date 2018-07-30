@@ -33,7 +33,15 @@ describe.only('Sale model', () => {
         delete json._id;
         json.buyers.forEach(b => delete b._id);
 
-
+        assert.isUndefined(sale.validateSync());
         assert.deepEqual(json, data);
+    });
+
+    it('validates required fields', () => {
+        const sale = new Sale({});
+        const errors = getErrors(sale.validateSync(), 3);
+        assert.equal(errors.bike.kind, 'required');
+        assert.equal(errors['seller.userName'].kind, 'required');
+        assert.equal(errors['seller.askingPrice'].kind, 'required');
     });
 });

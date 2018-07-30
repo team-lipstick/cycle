@@ -3,15 +3,14 @@ const { request, checkOk } = require('./request');
 const { dropCollection } = require('./db');
 
 const userData = {
-    // name: 'Bikey McBikeface',
+    name: 'Bikey McBikeface',
     email: 'bikey@bikeface.com',
     password: 'myFaceIsABike'
 };
 
 
-describe('Users API', () => {
+describe('Auth API', () => {
     let token;
-
     beforeEach(() => dropCollection('users'));
 
     beforeEach(() => {

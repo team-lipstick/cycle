@@ -23,7 +23,7 @@ describe('Sale model', () => {
                 accepted: true
             }],
             sold: {
-                user: Types.ObjectId(),
+                buyer: Types.ObjectId(),
                 finalPrice: 95,
                 date: new Date()
             }

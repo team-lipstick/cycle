@@ -23,4 +23,6 @@ describe('Bike model', () => {
         delete json.owner._id;
         assert.deepEqual(json, data);
     });
+
+    
 });

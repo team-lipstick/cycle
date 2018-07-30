@@ -19,4 +19,18 @@ describe('User model', () => {
         user.generateHash(mock.password);
         assert.isDefined(user.hash);
     });
+
+    it('makes sure hash and password are not equal', () => {
+        const user = new User(mock);
+        user.generateHash(mock.password);
+        assert.notEqual(user.hash, mock.password);
+        assert.isUndefined(user.validateSync());
+    });
+
+    it('correctly compares hash with original password', () => {
+        const user = new User(mock);
+        user.generateHash(mock.password);
+        assert.isTrue(user.comparePassword(mock.password));
+        assert.isFalse(user.comparePassword('badpassword'));
+    });
 });

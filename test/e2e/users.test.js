@@ -2,10 +2,16 @@ const { assert } = require('chai');
 const { request, checkOk } = require('./request');
 const { dropCollection } = require('./db');
 
-const userData = {
+const userOne = {
     name: 'Bikey McBikeface',
     email: 'bikey@bikeface.com',
     password: 'myFaceIsABike'
+};
+
+const userTwo = {
+    name: 'Mon Goosey',
+    email: 'mongoose@mongeese.com',
+    password: 'iAmMongooseHearMeRoar'
 };
 
 const badPassword = {
@@ -20,28 +26,41 @@ const badEmail = {
     password: 'myBikeIsAFace'
 };
 
+let tokenOne;
+let tokenTwo;
+
 describe('Auth API', () => {
-    let token;
     beforeEach(() => dropCollection('users'));
 
     beforeEach(() => {
         return request
             .post('/api/users/signup')
-            .send(userData)
+            .send(userOne)
             .then(checkOk)
             .then(({ body }) => {
-                token = body.token;
+                tokenOne = body.token;
+            });
+    });
+
+    beforeEach(() => {
+        return request
+            .post('/api/users/signup')
+            .send(userTwo)
+            .then(checkOk)
+            .then(({ body }) => {
+                tokenTwo = body.token;
             });
     });
 
     it('signs up a user', () => {
-        assert.isDefined(token);
+        assert.isDefined(tokenOne);
+        assert.isDefined(tokenTwo);
     });
 
     it('can sign in a user', () => {
         return request
             .post('/api/users/signin')
-            .send(userData)
+            .send(userOne)
             .then(checkOk)
             .then(({ body }) => {
                 assert.isDefined(body.token);
@@ -61,7 +80,7 @@ describe('Auth API', () => {
     it('cannot sign up with same email', () => {
         return request
             .post('/api/users/signup')
-            .send(userData)
+            .send(userOne)
             .then(res => {
                 assert.equal(res.status, 400);
                 assert.equal(res.body.error, 'Email already in use');

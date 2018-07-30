@@ -25,21 +25,31 @@ describe.only('Sale API', () => {
         }]
     };
         
-    it('saves a sale', () => {
+    beforeEach(() => {
         return save('sales', data)
             .then(sale => {
                 exampleSale = sale;
-                assert.isOk(exampleSale._id);
-                console.log('*****', exampleSale);
             });
+    });
+        
+    it('saves a sale', () => {
+        assert.isOk(exampleSale._id);
     });
 
     it('gets all sales', () => {
         return request
-            .get('/sales')
+            .get('/api/sales')
             .then(checkOk)
-            
-    })
+            .then(({ body }) => {
+                console.log('***body', body);
+                body.forEach(s => delete s._id);
+                delete exampleSale.buyers;
+                delete exampleSale.__v;
+                delete exampleSale._id;
+                
+                assert.deepEqual(body, [exampleSale]);
+            });
+    });
 
 });
 

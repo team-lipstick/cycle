@@ -1,14 +1,12 @@
 const { assert } = require('chai');
-const request = require('./request');
+const { request } = require('./request');
 const { dropCollection } = require('./db');
 const { checkOk } = request;
 
 describe.only('Bikes API', () => {
 
-    beforeEach(() => {
-        dropCollection('bikes');
-        dropCollection('users');
-    });
+    beforeEach(() => dropCollection('bikes'));
+    beforeEach(() => dropCollection('users'));
 
     let bikeyMcBikeface;
     let trek;
@@ -23,13 +21,24 @@ describe.only('Bikes API', () => {
 
     function saveUser(user) {
         return request
-            .post('/api/users')
+            .post('/api/users/signup')
             .send(user)
             .then(checkOk)
             .then(({ body }) => body);
 
     }
 
+    beforeEach(() => {
+        return saveUser({
+            name: 'Bikey McBikeface',
+            email: 'bikey@bikeface.com',
+            password: 'abc123'
+        })
+            .then(data => {
+                bikeyMcBikeface = data;
+
+            });
+    });
     beforeEach(() => {
         return saveBike({
             manufacturer: 'Trek',
@@ -44,16 +53,7 @@ describe.only('Bikes API', () => {
             .then(data => trek = data);
     });
 
-    beforeEach(() => {
-        return saveUser({
-            name: 'Bikey McBikeface',
-            email: 'bikey@bikeface.com',
-            hash: 'abc123',
-        })
-            .then(data => bikeyMcBikeface = data);
-    });
-    
-    it('saves a film', () => {
+    it('saves a bike', () => {
         assert.isOk(trek._id);
     });
 });

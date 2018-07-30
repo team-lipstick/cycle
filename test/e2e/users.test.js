@@ -14,7 +14,6 @@ const badPassword = {
     password: 'myBikeIsAFace'
 };
 
-
 describe('Auth API', () => {
     let token;
     beforeEach(() => dropCollection('users'));
@@ -50,6 +49,16 @@ describe('Auth API', () => {
             .then(res => {
                 assert.equal(res.status, 401);
                 assert.equal(res.body.error, 'Invalid email or password');
+            });
+    });
+
+    it('cannot sign up with same email', () => {
+        return request
+            .post('/api/users/signup')
+            .send(userData)
+            .then(res => {
+                assert.equal(res.status, 400);
+                assert.equal(res.body.error, 'Email already in use');
             });
     });
 });

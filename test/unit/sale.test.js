@@ -3,7 +3,7 @@ const { getErrors } = require('./helper');
 const Sale = require('../../lib/models/sale');
 const { Types } = require('mongoose');
 
-describe.only('Sale model', () => {
+describe('Sale model', () => {
 
     it('validates good model', () => {
         const data = {
@@ -28,6 +28,7 @@ describe.only('Sale model', () => {
                 date: new Date()
             }
         };
+    
         const sale = new Sale(data);
         const json = sale.toJSON();
         delete json._id;

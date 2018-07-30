@@ -1,11 +1,11 @@
 const { assert } = require('chai');
-const errors = require
+const { getErrors} = require('./helper');
 const Sale = require('../../lib/model/sale');
 const { Types } = require('mongoose');
 
-describe('Sale model', () => {
+describe.only('Sale model', () => {
 
-    it('validates good sales model', () => {
+    it('validates good model', () => {
         const data = {
             bike: Types.ObjectId(),
             seller: {
@@ -22,10 +22,17 @@ describe('Sale model', () => {
                 offer: 95,
                 accepted: true
             }],
-            sold: 
+            sold: {
+                userName: Types.ObjectId(),
+                price: 95,
+                date: new Date()
+            }
         };
         const sale = new Sale(data);
         const json = sale.toJSON();
+        delete json._id;
+        json.buyers.forEach(b => delete b._id);
+
 
         assert.deepEqual(json, data);
     });

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const program = require('commander');
 const { prompt } = require('inquirer');
 const { addBike, findBike, updateBike, removeBike, listBikes } = require('../cycle/cli/lib/index');
@@ -26,7 +27,7 @@ const questions = [
     {
         type: 'input',
         name: 'speeds',
-        message: 'Bike speeds'
+        message: 'Bike Speeds'
     },
     {
         type: 'input',
@@ -36,7 +37,7 @@ const questions = [
     {
         type: 'input',
         name: 'type',
-        message: 'Bike Type Name'
+        message: 'Bike Type '
     },
 ];
 

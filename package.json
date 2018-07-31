@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "template for backend web server using express and mongoose",
   "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./commands.js",
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",

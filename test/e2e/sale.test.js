@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 const { dropCollection } = require('./db');
-const { checkOk, save, request } = require('./request');
+const { checkOk, save, request, addOffer } = require('./request');
 
 describe.only('Sale API', () => {
 
@@ -13,14 +13,14 @@ describe.only('Sale API', () => {
             user: '5b47c31caa28598cae793d94',
             askingPrice: 100,
         },
-        buyers: [{
+        offers: [{
             user: '5b47c31caa28598cae793d95',
-            offer: 75,
+            bestOffer: 75,
             accepted: false
         },
         {
             user: '5b47c31caa28598cae793d96',
-            offer: 95,
+            bestOffer: 95,
             accepted: true
         }]
     };
@@ -41,9 +41,9 @@ describe.only('Sale API', () => {
             .get('/api/sales')
             .then(checkOk)
             .then(({ body }) => {
-                console.log('***body', body);
+                // console.log('***body', body);
                 body.forEach(s => delete s._id);
-                delete exampleSale.buyers;
+                delete exampleSale.offers;
                 delete exampleSale.__v;
                 delete exampleSale._id;
                 
@@ -51,5 +51,23 @@ describe.only('Sale API', () => {
             });
     });
 
-});
+    it('add offer to sale', () => {
+        const offer = {
+            buyer: '5b47c31caa28598cae793d95',
+            bestOffer: 90
+        };
+        return addOffer(exampleSale._id, offer)
+            .then(offer => {
+                assert.isDefined(offer._id);
+            })
+            .then(() => {
+                return request.get(`/api/sales/${exampleSale._id}`)
+                    .then(checkOk)
+                    .then(({ body }) => {
+                        assert.equal(body.offers.length, 3);
+                        // console.log('***offers***', body.offers);
+                    });           
+            });
+    });
 
+});

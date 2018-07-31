@@ -38,12 +38,11 @@ describe.only('Users API', () => {
             .get('/api/users')
             .then(checkOk)
             .then(({ body }) => {
-                console.log('** body', body);
-
+                
                 assert.deepEqual(body, [mongoosey]);
             });
     });
-
+        
     it('gets a user by id', () => {
         return request
             .get(`/api/users/${mongoosey._id}`)
@@ -53,6 +52,18 @@ describe.only('Users API', () => {
                 assert.deepEqual(body, mongoosey);
             });
     });
-    
-
+        
+    it('updates a user', () => {
+        mongoosey.email = 'mongoose666@mongeese.com';
+        return request
+            .put(`/api/users/${mongoosey._id}`)
+            .send(mongoosey)
+            .then(checkOk)
+            .then(({ body }) => {
+                // console.log('** body', body);
+                assert.deepEqual(body.email, mongoosey.email);
+            });
+    });
+        
+        
 });

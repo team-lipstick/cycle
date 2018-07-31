@@ -1,12 +1,12 @@
 /* eslint no-console: off */
 const mongoose = require('mongoose');
 const Bike =  require('../models/bike');
-const db = mongoose.connect('mongodb://localhost:27017/cycle', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/cycle', { useNewUrlParser: true });
 
 const addBike = (bike) => {
     Bike.create(bike).then(bike => {
         console.info('New Bike Added', bike);
-        db.close();
+        mongoose.disconnect();
     });
 };
 
@@ -16,7 +16,7 @@ const findBike = (name) => {
         .then(bike => {
             console.log(bike);
             console.info(`${bike.length} matches`);
-            db.close();
+            mongoose.disconnect();
         });
 };
 
@@ -24,7 +24,7 @@ const updateBike = (_id, bike) => {
     Bike.update({ _id }, bike)
         .then(bike => {
             console.info('Bike price has been updated', bike);
-            db.close();
+            mongoose.disconnect();
         });
 };
 
@@ -32,7 +32,7 @@ const removeBike = (_id) => {
     Bike.remove({ _id })
         .then(bike => {
             console.info('Bike has been removed', bike);
-            db.close();
+            mongoose.disconnect();
         });
 };
 
@@ -41,7 +41,7 @@ const listBikes = () => {
         .then(bikes => {
             console.info(bikes);
             console.info(`${bikes.length} bikes`);
-            db.close();
+            mongoose.disconnect();
         });
 };
 

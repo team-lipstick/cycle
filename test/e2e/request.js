@@ -12,6 +12,14 @@ const checkOk = res => {
     return res;
 };
 
+const simplify = data => {
+    const simple = { _id: data._id };
+    if(data.name) simple.name = data.name;
+    if(data.model) simple.model = data.model;
+    if(data.buyer) simple.buyer = data.buyer;    
+    return simple;
+};
+
 const save = (path, data, token = null) => {
     return request
         .post(`/api/${path}`)
@@ -36,5 +44,6 @@ module.exports = {
     request,
     save,
     addOffer,
-    checkOk
+    checkOk,
+    simplify
 };

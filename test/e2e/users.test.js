@@ -64,6 +64,19 @@ describe.only('Users API', () => {
                 assert.deepEqual(body.email, mongoosey.email);
             });
     });
-        
-        
+    
+    it('deletes a user', () => {
+        return request  
+            .delete(`/api/users/${mongoosey._id}`)
+            .then(checkOk)
+            .then(res => {
+                assert.deepEqual(res.body, { removed:true });
+                return request
+                    .get('/api/users');
+            })
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, []);
+            });
+    });
 });

@@ -6,19 +6,29 @@ const { addBike, findBike, updateBike, removeBike, listBikes } = require('../cyc
 
 const questionsUser = [
     {
+        type: 'list',
+        name: 'auth',
+        message: 'Sign in or sign up',
+        choices: [
+            { name: 'Sign in', value: 'signIn' },
+            { name: 'Sign up', value: 'signUp' }
+        ]
+    },
+    {
         type: 'input',
         name: 'name',
-        message: 'UserName'
+        message: 'Enter User Name'
     },
     {
         type: 'input',
         name: 'email',
-        message: 'User Email'
+        message: 'User User Email'
     },
     {
         type: 'password',
         name: 'hash',
-        message: 'User Password'
+        mask: '*',
+        message: 'Enter User Password'
     },
 ];
 
@@ -58,11 +68,11 @@ const questionsBike = [
         name: 'type',
         message: 'Bike Type '
     },
-    {
-        type: 'input',
-        name: 'owner',
-        message: 'Bike Owner'
-    },
+    // {
+    //     type: 'input',
+    //     name: 'owner',
+    //     message: 'Bike Owner'
+    // },
 ];
 
 const priceBike = [
@@ -87,8 +97,8 @@ program
     });
 
 program
-    .command('add')
-    .alias('a')
+    .command('add bike')
+    .alias('ab')
     .description('Add a bike')
     .action(() => {
         prompt(questionsBike)
@@ -96,14 +106,14 @@ program
     });
 
 program 
-    .command('find <name>')
-    .alias('f')
+    .command('find bike <name>')
+    .alias('fb')
     .description('Find a bike')
     .action(name => findBike(name));
 
 program
-    .command('update <_id>')
-    .alias('u')
+    .command('update bike<_id>')
+    .alias('ub')
     .description('Update bike price')
     .action(_id => {
         prompt(priceBike)
@@ -117,8 +127,8 @@ program
     .action(_id => removeBike(_id));
 
 program 
-    .command('list')
-    .alias('l')
+    .command('list bike')
+    .alias('lsb')
     .description('List all bikes')
     .action(() => listBikes());
 

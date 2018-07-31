@@ -21,35 +21,27 @@ describe.only('Users API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 tokenTwo = body.token;
-                // console.log('** body', body);
                 mongoosey = body.user;
             });
     });
-    // beforeEach(() => {
-    //     return request
-    //         .post('/api/auth/signin')
-    //         .send(userTwo)
-    //         .then(checkOk)
-    //         .then(({ body }) => {
-    //             tokenTwo = body.token;
-    //             // console.log('** body', body);
-    //             userTwo = body.user;
-    //         });
-    // });
-
+        
     it('signs up a user', () => {
         assert.isDefined(tokenTwo);
     });
-    
+        
     it('signs in a user', () => {
         assert.isOk(mongoosey._id);
-        // return request
-        //     .post('/api/auth/signin')
-        //     .send(userTwo)
-        //     .then(checkOk)
-        //     .then(({ body }) => {
-        //         assert.isDefined(body.token);
-        //     });
+    });
+        
+    it('gets a list of users', () => {
+        return request 
+            .get('/api/users')
+            .then(checkOk)
+            .then(({ body }) => {
+                console.log('** body', body);
+
+                assert.deepEqual(body, [mongoosey]);
+            });
     });
     
 

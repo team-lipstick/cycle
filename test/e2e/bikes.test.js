@@ -10,6 +10,7 @@ describe.only('Bikes API', () => {
 
     let trek;
     let giant;
+    // eslint-disable-next-line
     let token;
     let user;
     
@@ -77,7 +78,6 @@ describe.only('Bikes API', () => {
             .get(`/api/bikes/${trek._id}`)
             .then(checkOk)
             .then(({ body }) => {
-                // console.log('** trek **', trek);
                 assert.deepEqual(body, trek);
             });
             
@@ -88,8 +88,32 @@ describe.only('Bikes API', () => {
             .get('/api/bikes')
             .then(checkOk)
             .then(({ body }) => {
-                // console.log('** body **', body);
                 assert.deepEqual(body, [trek, giant]);
             });
+    });
+        
+    it('updates a bike', () => {
+        trek.price = 10000;
+        return request  
+            .put(`/api/bikes/${trek._id}`)
+            .send(trek)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body.price, 10000);
+            });
+    });
+        
+    it('deletes a bike', () => {
+        return request
+            .delete(`/api/bikes/${giant._id}`)
+            .then(checkOk)
+            .then(res => {
+                assert.deepEqual(res.body, { removed: true });
+                return request.get('/api/bikes');
+            })
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body.length, 1);
+            });    
     });
 });

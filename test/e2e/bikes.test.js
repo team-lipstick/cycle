@@ -8,8 +8,9 @@ describe.only('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
 
-    let bikeyMcBikeface;
     let trek;
+    let token;
+    let user;
     
     function saveBike(bike) {
         return request
@@ -17,28 +18,27 @@ describe.only('Bikes API', () => {
             .send(bike)
             .then(checkOk)
             .then(({ body }) => body);
+                
     }
 
-    function saveUser(user) {
-        return request
-            .post('/api/users/signup')
-            .send(user)
-            .then(checkOk)
-            .then(({ body }) => body);
-
-    }
+    const bikeyMcBikeface = {
+        name: 'Bikey McBikeface',
+        email: 'bikey@bikeface.com',
+        password: 'myFaceIsABike',
+        
+    };
 
     beforeEach(() => {
-        return saveUser({
-            name: 'Bikey McBikeface',
-            email: 'bikey@bikeface.com',
-            password: 'abc123'
-        })
-            .then(data => {
-                bikeyMcBikeface = data;
-
+        return request
+            .post('/api/users/signup')
+            .send(bikeyMcBikeface)
+            .then(checkOk)
+            .then(({ body }) => {
+                token = body.token;
+                user = body.user;
             });
     });
+
     beforeEach(() => {
         return saveBike({
             manufacturer: 'Trek',
@@ -48,12 +48,12 @@ describe.only('Bikes API', () => {
             speeds: 11,
             gender: 'womans',
             type: 'Road',
-            owner: bikeyMcBikeface._id
+            owner: user._id
         })
             .then(data => trek = data);
     });
 
     it('saves a bike', () => {
         assert.isOk(trek._id);
-    });
+    }); 
 });

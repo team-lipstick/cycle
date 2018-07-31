@@ -9,6 +9,7 @@ describe.only('Bikes API', () => {
     beforeEach(() => dropCollection('users'));
 
     let trek;
+    let giant;
     let token;
     let user;
     
@@ -53,6 +54,19 @@ describe.only('Bikes API', () => {
         })
             .then(data => trek = data);
     });
+    beforeEach(() => {
+        return saveBike({
+            manufacturer: 'Giant',
+            model: 'Fathom',
+            year: 2016,
+            price: 1400,
+            speeds: 21,
+            gender: 'mens',
+            type: 'trail',
+            owner: user._id
+        })
+            .then(data => giant = data);
+    });
 
     it('saves a bike', () => {
         assert.isOk(trek._id);
@@ -63,10 +77,19 @@ describe.only('Bikes API', () => {
             .get(`/api/bikes/${trek._id}`)
             .then(checkOk)
             .then(({ body }) => {
-                console.log('** body **', body);
-                console.log('** trek **', trek);
+                // console.log('** trek **', trek);
                 assert.deepEqual(body, trek);
             });
+            
+    });
         
+    it('gets all bikes', () => {
+        return request
+            .get('/api/bikes')
+            .then(checkOk)
+            .then(({ body }) => {
+                // console.log('** body **', body);
+                assert.deepEqual(body, [trek, giant]);
+            });
     });
 });

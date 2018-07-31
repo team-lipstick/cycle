@@ -16,7 +16,6 @@ describe.only('Sale API', () => {
         offers: [{
             user: '5b47c31caa28598cae793d95',
             bestOffer: 75,
-            accepted: false
         },
         {
             user: '5b47c31caa28598cae793d96',

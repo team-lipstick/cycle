@@ -1,9 +1,28 @@
 #!/usr/bin/env node
 const program = require('commander');
 const { prompt } = require('inquirer');
-const { addBike, findBike, updateBike, removeBike, listBikes } = require('../cycle/cli/lib/index');
+const { addUser } = require('../cycle/cli/lib/routes/users');
+const { addBike, findBike, updateBike, removeBike, listBikes } = require('../cycle/cli/lib/routes/bikes');
 
-const questions = [
+const questionsUser = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'UserName'
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'User Email'
+    },
+    {
+        type: 'password',
+        name: 'hash',
+        message: 'User Password'
+    },
+];
+
+const questionsBike = [
     {
         type: 'input',
         name: 'manufacturer',
@@ -39,9 +58,14 @@ const questions = [
         name: 'type',
         message: 'Bike Type '
     },
+    {
+        type: 'input',
+        name: 'owner',
+        message: 'Bike Owner'
+    },
 ];
 
-const priceQ = [
+const priceBike = [
     {
         type: 'input',
         name: 'price',
@@ -51,14 +75,23 @@ const priceQ = [
 
 program
     .version('1.0.0')
-    .description('Bike Management System');
+    .description('Cycle Management System');
+
+program
+    .command('add user')
+    .alias('au')
+    .description('Add a User')
+    .action(() => {
+        prompt(questionsUser)
+            .then(answers => addUser(answers));
+    });
 
 program
     .command('add')
     .alias('a')
     .description('Add a bike')
     .action(() => {
-        prompt(questions)
+        prompt(questionsBike)
             .then(answers => addBike(answers));
     });
 
@@ -73,7 +106,7 @@ program
     .alias('u')
     .description('Update bike price')
     .action(_id => {
-        prompt(priceQ)
+        prompt(priceBike)
             .then(answers => updateBike(_id, answers));
     });
 

@@ -40,7 +40,6 @@ describe('Sale API', () => {
             .get('/api/sales')
             .then(checkOk)
             .then(({ body }) => {
-                // console.log('***body', body);
                 body.forEach(s => delete s._id);
                 delete exampleSale.offers;
                 delete exampleSale.__v;

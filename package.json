@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "template for backend web server using express and mongoose",
   "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./commands.js",
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
@@ -35,6 +37,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "commander": "^2.16.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "inquirer": "^6.0.0",

@@ -3,7 +3,7 @@ const { request } = require('./request');
 const { dropCollection } = require('./db');
 const { checkOk } = request;
 
-describe('Bikes API', () => {
+describe.only('Bikes API', () => {
 
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
@@ -18,7 +18,6 @@ describe('Bikes API', () => {
         name: 'Bikey McBikeface',
         email: 'bikey@bikeface.com',
         password: 'myFaceIsABike',
-        
     };
     
     function saveBike(bike) {
@@ -26,10 +25,8 @@ describe('Bikes API', () => {
             .post('/api/bikes')
             .send(bike)
             .then(checkOk)
-            .then(({ body }) => body);
-                
+            .then(({ body }) => body);    
     }
-
 
     beforeEach(() => {
         return request
@@ -55,6 +52,7 @@ describe('Bikes API', () => {
         })
             .then(data => trek = data);
     });
+
     beforeEach(() => {
         return saveBike({
             manufacturer: 'Giant',

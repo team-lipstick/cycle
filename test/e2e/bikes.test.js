@@ -12,6 +12,13 @@ describe.only('Bikes API', () => {
     let token;
     let user;
     
+    const bikeyMcBikeface = {
+        name: 'Bikey McBikeface',
+        email: 'bikey@bikeface.com',
+        password: 'myFaceIsABike',
+        
+    };
+    
     function saveBike(bike) {
         return request
             .post('/api/bikes')
@@ -21,12 +28,6 @@ describe.only('Bikes API', () => {
                 
     }
 
-    const bikeyMcBikeface = {
-        name: 'Bikey McBikeface',
-        email: 'bikey@bikeface.com',
-        password: 'myFaceIsABike',
-        
-    };
 
     beforeEach(() => {
         return request
@@ -55,5 +56,17 @@ describe.only('Bikes API', () => {
 
     it('saves a bike', () => {
         assert.isOk(trek._id);
-    }); 
+    });
+
+    it('gets a bike by id', () => {
+        return request
+            .get(`/api/bikes/${trek._id}`)
+            .then(checkOk)
+            .then(({ body }) => {
+                console.log('** body **', body);
+                console.log('** trek **', trek);
+                assert.deepEqual(body, trek);
+            });
+        
+    });
 });

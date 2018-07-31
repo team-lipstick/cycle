@@ -86,15 +86,6 @@ describe('Sale API', () => {
         return save('sales', 
             {
                 bike: exampleBike._id,
-                offers: [{
-                    buyer: exampleUserTwo._id,
-                    bestOffer: 75,
-                },
-                {
-                    buyer: exampleUserThree._id,
-                    bestOffer: 95,
-                    accepted: true
-                }]
             })
             .then(sale => {
                 exampleSale = sale;
@@ -122,46 +113,26 @@ describe('Sale API', () => {
     it('gets a sale by id', () => {
         const sale = {
             bike: simplify(exampleBike),
-            offers: [{
-                buyer: simplify(exampleUserTwo),
-                bestOffer: 75,
-                accepted: false
-            },
-            {
-                buyer: simplify(exampleUserThree),
-                bestOffer: 95,
-                accepted: true
-            }]
+            sold: false
         };
         return request
             .get(`/api/sales/${exampleSale._id}`)
             .then(checkOk)
             .then(({ body }) => {
-                body.offers.forEach(o => {
-                    delete o._id;
-                });
                 delete body._id;
-                console.log('***body', body);
                 assert.deepEqual(body, sale);
             });
     });
 
-    it('add offer to sale', () => {
-        const offer = {
-            buyer: '5b47c31caa28598cae793d95',
-            bestOffer: 90
-        };
-        return addOffer(exampleSale._id, offer)
-            .then(offer => {
-                assert.isDefined(offer._id);
-            })
-            .then(() => {
-                return request.get(`/api/sales/${exampleSale._id}`)
-                    .then(checkOk)
-                    .then(({ body }) => {
-                        assert.equal(body.offers.length, 3);
-                        // console.log('***offers***', body.offers);
-                    });           
+    it('updates sold field', () => {
+        exampleSale.sold = true;
+        
+        return request
+            .put(`/api/sales/${exampleSale._id}`)
+            .send(exampleSale)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.equal(body.sold, true);
             });
     });
 

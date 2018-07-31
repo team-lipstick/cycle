@@ -3,7 +3,7 @@ const { getErrors } = require('./helper');
 const Sale = require('../../lib/models/sale');
 const { Types } = require('mongoose');
 
-describe.only('Sale model', () => {
+describe('Sale model', () => {
 
     it('validates good model', () => {
         const data = {

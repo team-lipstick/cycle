@@ -1,3 +1,4 @@
+/* eslint no-console: off */
 const mongoose = require('mongoose');
 const Bike =  require('./models/bike');
 mongoose.Promise = global.Promise;

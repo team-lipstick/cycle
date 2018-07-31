@@ -133,7 +133,19 @@ describe('Sale API', () => {
     it.skip('deletes a sale', () => {
         return request
             .delete(`/api/sales/${exampleSale._id}`)
-    })
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.strictEqual(body.removed, true);
+            })
+            .then(() => {
+                return request
+                    .get('/api/sales')
+                    .then(checkOk)
+                    .then(({ body }) => {
+                        assert.deepEqual(body, []);
+                    });
+            });
+    });
 
     it.skip('updates sold field', () => {
         exampleSale.sold = true;

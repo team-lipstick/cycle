@@ -8,10 +8,6 @@ describe.only('Sale model', () => {
     it('validates good model', () => {
         const data = {
             bike: Types.ObjectId(),
-            seller: {
-                user: Types.ObjectId(),
-                askingPrice: 100,
-            },
             offers: [{
                 buyer: Types.ObjectId(),
                 bestOffer: 75,
@@ -40,10 +36,8 @@ describe.only('Sale model', () => {
 
     it('validates required fields', () => {
         const sale = new Sale({});
-        const errors = getErrors(sale.validateSync(), 3);
+        const errors = getErrors(sale.validateSync(), 1);
         assert.equal(errors.bike.kind, 'required');
-        assert.equal(errors['seller.user'].kind, 'required');
-        assert.equal(errors['seller.askingPrice'].kind, 'required');
     });
 
     it('validates sold field', () => {

@@ -3,28 +3,28 @@ const { getErrors } = require('./helper');
 const Sale = require('../../lib/models/sale');
 const { Types } = require('mongoose');
 
-describe('Sale model', () => {
+describe.only('Sale model', () => {
 
     it('validates good model', () => {
         const data = {
             bike: Types.ObjectId(),
             seller: {
-                userName: Types.ObjectId(),
+                user: Types.ObjectId(),
                 askingPrice: 100,
             },
-            buyers: [{
-                userName: Types.ObjectId(),
-                offer: 75,
+            offers: [{
+                buyer: Types.ObjectId(),
+                bestOffer: 75,
                 accepted: false
             },
             {
-                userName: Types.ObjectId(),
-                offer: 95,
+                buyer: Types.ObjectId(),
+                bestOffer: 95,
                 accepted: true
             }],
             sold: {
-                userName: Types.ObjectId(),
-                price: 95,
+                buyer: Types.ObjectId(),
+                finalPrice: 95,
                 date: new Date()
             }
         };
@@ -32,7 +32,7 @@ describe('Sale model', () => {
         const sale = new Sale(data);
         const json = sale.toJSON();
         delete json._id;
-        json.buyers.forEach(b => delete b._id);
+        json.offers.forEach(b => delete b._id);
 
         assert.isUndefined(sale.validateSync());
         assert.deepEqual(json, data);
@@ -42,7 +42,35 @@ describe('Sale model', () => {
         const sale = new Sale({});
         const errors = getErrors(sale.validateSync(), 3);
         assert.equal(errors.bike.kind, 'required');
-        assert.equal(errors['seller.userName'].kind, 'required');
+        assert.equal(errors['seller.user'].kind, 'required');
         assert.equal(errors['seller.askingPrice'].kind, 'required');
+    });
+
+    it('validates sold field', () => {
+        const data = {
+            bike: Types.ObjectId(),
+            seller: {
+                user: Types.ObjectId(),
+                askingPrice: 100,
+            },
+            offers: [{
+                buyer: Types.ObjectId(),
+                bestOffer: 75,
+                accepted: false
+            },
+            {
+                buyer: Types.ObjectId(),
+                bestOffer: 95,
+                accepted: true
+            }]
+        };
+        const sale = new Sale(data);
+        assert.isUndefined(sale.sold.user);
+        assert.isUndefined(sale.sold.finalPrice);
+        assert.isUndefined(sale.sold.date);
+
+        sale.checkIfSold();
+        assert.isDefined(sale.sold);
+        assert.deepEqual(sale.sold.finalPrice, 95);
     });
 });

@@ -21,10 +21,20 @@ const save = (path, data, token = null) => {
         .then(({ body }) => body);
 };
 
+const addOffer = (id, data, token = null) => {
+    return request
+        .post(`/api/sales/${id}/offers`)
+        .set('Authorization', token)
+        .send(data)
+        .then(checkOk)
+        .then(({ body }) => body);
+};
+
 after(done => server.close(done));
 
 module.exports = {
     request,
     save,
+    addOffer,
     checkOk
 };

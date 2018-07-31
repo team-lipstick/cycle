@@ -3,7 +3,7 @@ const { getErrors } = require('./helper');
 const Sale = require('../../lib/models/sale');
 const { Types } = require('mongoose');
 
-describe('Sale model', () => {
+describe.only('Sale model', () => {
 
     it('validates good model', () => {
         const data = {
@@ -12,14 +12,14 @@ describe('Sale model', () => {
                 user: Types.ObjectId(),
                 askingPrice: 100,
             },
-            buyers: [{
-                user: Types.ObjectId(),
-                offer: 75,
+            offers: [{
+                buyer: Types.ObjectId(),
+                bestOffer: 75,
                 accepted: false
             },
             {
-                user: Types.ObjectId(),
-                offer: 95,
+                buyer: Types.ObjectId(),
+                bestOffer: 95,
                 accepted: true
             }],
             sold: {
@@ -32,7 +32,7 @@ describe('Sale model', () => {
         const sale = new Sale(data);
         const json = sale.toJSON();
         delete json._id;
-        json.buyers.forEach(b => delete b._id);
+        json.offers.forEach(b => delete b._id);
 
         assert.isUndefined(sale.validateSync());
         assert.deepEqual(json, data);
@@ -53,14 +53,14 @@ describe('Sale model', () => {
                 user: Types.ObjectId(),
                 askingPrice: 100,
             },
-            buyers: [{
-                user: Types.ObjectId(),
-                offer: 75,
+            offers: [{
+                buyer: Types.ObjectId(),
+                bestOffer: 75,
                 accepted: false
             },
             {
-                user: Types.ObjectId(),
-                offer: 95,
+                buyer: Types.ObjectId(),
+                bestOffer: 95,
                 accepted: true
             }]
         };

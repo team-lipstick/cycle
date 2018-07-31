@@ -86,10 +86,6 @@ describe('Sale API', () => {
         return save('sales', 
             {
                 bike: exampleBike._id,
-                seller: {
-                    user: exampleUserOne._id,
-                    askingPrice: 100,
-                },
                 offers: [{
                     buyer: exampleUserTwo._id,
                     bestOffer: 75,
@@ -126,10 +122,6 @@ describe('Sale API', () => {
     it('gets a sale by id', () => {
         const sale = {
             bike: simplify(exampleBike),
-            seller: {
-                user: simplify(exampleUserOne),
-                askingPrice: 100,
-            },
             offers: [{
                 buyer: simplify(exampleUserTwo),
                 bestOffer: 75,
@@ -149,6 +141,7 @@ describe('Sale API', () => {
                     delete o._id;
                 });
                 delete body._id;
+                console.log('***body', body);
                 assert.deepEqual(body, sale);
             });
     });

@@ -17,7 +17,6 @@ const simplify = data => {
     if(data.name) simple.name = data.name;
     if(data.model) simple.price = data.price;
     if(data.price) simple.model = data.model;
-    if(data.buyer) simple.buyer = data.buyer;    
     if(data.owner) simple.owner = 'Bikey McBikeface';    
     return simple;
 };

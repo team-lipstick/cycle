@@ -97,6 +97,13 @@ describe('Sale API', () => {
     });
 
     it('gets all sales', () => {
+        const sale = { 
+            sold: false,
+            bike:
+             {   _id: exampleBike._id,
+                 model: 'Emonda',
+                 price: 11299 } 
+        };
         return request
             .get('/api/sales')
             .then(checkOk)
@@ -105,8 +112,7 @@ describe('Sale API', () => {
                 delete exampleSale.offers;
                 delete exampleSale.__v;
                 delete exampleSale._id;
-                
-                assert.deepEqual(body, [exampleSale]);
+                assert.deepEqual(body, [sale]);
             });
     });
 
@@ -124,7 +130,12 @@ describe('Sale API', () => {
             });
     });
 
-    it('updates sold field', () => {
+    it.skip('deletes a sale', () => {
+        return request
+            .delete(`/api/sales/${exampleSale._id}`)
+    })
+
+    it.skip('updates sold field', () => {
         exampleSale.sold = true;
         
         return request
@@ -133,6 +144,14 @@ describe('Sale API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 assert.equal(body.sold, true);
+            })
+            .then(() => {
+                return request
+                    .get('/api/bikes')
+                    .then(checkOk)
+                    .then(({ body }) => {
+                        assert.deepEqual(body, []);
+                    });
             });
     });
 

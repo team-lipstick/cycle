@@ -111,7 +111,7 @@ describe('Sale API', () => {
             });
     });
 
-    it.skip('updates sold field', () => {
+    it.skip('updates sold field and removes sold bike', () => {
         exampleSale.sold = true;
         
         return request

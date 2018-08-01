@@ -12,7 +12,7 @@ describe('Users API', () => {
         email: 'mongoose@mongeese.com',
         password: 'iAmMongooseHearMeRoar'
     };
-
+    // authenticated user
     beforeEach(() => {
         return request
             .post('/api/auth/signup')
@@ -56,10 +56,10 @@ describe('Users API', () => {
         mongoosey.email = 'mongoose666@mongeese.com';
         return request
             .put(`/api/users/${mongoosey._id}`)
+            .set('Authorization', tokenTwo)
             .send(mongoosey)
             .then(checkOk)
             .then(({ body }) => {
-                // console.log('** body', body);
                 assert.deepEqual(body.email, mongoosey.email);
             });
     });
@@ -67,6 +67,7 @@ describe('Users API', () => {
     it('deletes a user', () => {
         return request  
             .delete(`/api/users/${mongoosey._id}`)
+            .set('Authorization', tokenTwo)
             .then(checkOk)
             .then(res => {
                 assert.deepEqual(res.body, { removed:true });

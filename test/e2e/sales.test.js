@@ -94,7 +94,7 @@ describe('Sale API', () => {
             });
     });
 
-    it.skip('deletes a sale', () => {
+    it('deletes a sale', () => {
         return request
             .delete(`/api/sales/${exampleSale._id}`)
             .then(checkOk)
@@ -111,7 +111,7 @@ describe('Sale API', () => {
             });
     });
 
-    it.skip('updates sold field and removes sold bike', () => {
+    it('updates sold field and removes sold bike', () => {
         exampleSale.sold = true;
         
         return request

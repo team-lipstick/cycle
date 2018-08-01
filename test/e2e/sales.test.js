@@ -134,7 +134,7 @@ describe('Sale API', () => {
                     });
             });
     });
-
+  
     it.only('adds offer to offers field', () => {
         exampleSale.offers = {
             email: exampleUserOne._id,
@@ -151,5 +151,4 @@ describe('Sale API', () => {
                 assert.deepEqual(exampleUserOne._id, body.offers[0].email);
             });
     });
-
 });

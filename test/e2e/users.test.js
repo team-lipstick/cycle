@@ -2,34 +2,55 @@ const { assert } = require('chai');
 const { request, checkOk } = require('./request');
 const { dropCollection } = require('./db');
 
+let token;
+let user;
+// eslint-disable-next-line
+let tokenTwo;
+let userTwo;
+
+const monGoosey = {
+    name: 'Mon Goosey',
+    email: 'mongoose@mongeese.com',
+    password: 'iAmMongooseHearMeRoar'
+};
+
+const bikey = {
+    name: 'Bikey McBikeface',
+    email: 'bikey@bikeface.com',
+    password: 'myFaceIsABike',
+};
+
 describe('Users API', () => {
     beforeEach(() => dropCollection('users'));
 
-    let tokenTwo;
-    let mongoosey;
-    let userTwo = {
-        name: 'Mon Goosey',
-        email: 'mongoose@mongeese.com',
-        password: 'iAmMongooseHearMeRoar'
-    };
-    // authenticated user
     beforeEach(() => {
         return request
             .post('/api/auth/signup')
-            .send(userTwo)
+            .send(monGoosey)
+            .then(checkOk)
+            .then(({ body }) => {
+                token = body.token;
+                user = body.user;
+            });
+    });
+
+    beforeEach(() => {
+        return request
+            .post('/api/auth/signup')
+            .send(bikey)
             .then(checkOk)
             .then(({ body }) => {
                 tokenTwo = body.token;
-                mongoosey = body.user;
+                userTwo = body.user;
             });
     });
         
     it('signs up a user', () => {
-        assert.isDefined(tokenTwo);
+        assert.isDefined(token);
     });
         
     it('signs in a user', () => {
-        assert.isOk(mongoosey._id);
+        assert.isOk(user._id);
     });
         
     it('gets a list of users', () => {
@@ -38,36 +59,47 @@ describe('Users API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 
-                assert.deepEqual(body, [mongoosey]);
+                assert.deepEqual(body, [user, userTwo]);
             });
     });
         
     it('gets a user by id', () => {
         return request
-            .get(`/api/users/${mongoosey._id}`)
+            .get(`/api/users/${user._id}`)
             .then(checkOk)
             .then(({ body }) => {
-                mongoosey = body;
-                assert.deepEqual(body, mongoosey);
+                user = body;
+                assert.deepEqual(body, user);
             });
     });
         
     it('updates a user', () => {
-        mongoosey.email = 'mongoose666@mongeese.com';
+        user.email = 'mongoose666@mongeese.com';
         return request
-            .put(`/api/users/${mongoosey._id}`)
-            .set('Authorization', tokenTwo)
-            .send(mongoosey)
+            .put(`/api/users/${user._id}`)
+            .set('Authorization', token)
+            .send(user)
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body.email, mongoosey.email);
+                assert.deepEqual(body.email, user.email);
+            });
+    });
+
+    it('prevents user from updating a different user', () => {
+        user.email = 'gooseymon@geese.com';
+        return request
+            .put(`/api/users/${user._id}`)
+            .set('Authorization', tokenTwo)
+            .then(res => {
+                assert.equal(res.status, 403);
+                assert.equal(res.body.error, 'Invalid user');
             });
     });
     
     it('deletes a user', () => {
         return request  
-            .delete(`/api/users/${mongoosey._id}`)
-            .set('Authorization', tokenTwo)
+            .delete(`/api/users/${user._id}`)
+            .set('Authorization', token)
             .then(checkOk)
             .then(res => {
                 assert.deepEqual(res.body, { removed:true });
@@ -76,7 +108,7 @@ describe('Users API', () => {
             })
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, []);
+                assert.deepEqual(body, [userTwo]);
             });
     });
 });

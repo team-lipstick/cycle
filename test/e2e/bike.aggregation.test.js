@@ -1,18 +1,19 @@
 const { assert } = require('chai');
 const { request } = require('./request');
-const { checkOk } = request;
 const { dropCollection } = require('./db');
+const { checkOk } = request;
 
-describe.only('Bike Aggregation', () => {
-
+describe('Bikes Aggregation API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
 
+    let trek;
+    let giant;
     // eslint-disable-next-line
     let token;
     let user;
     
-    let bikeyMcBikeface = {
+    const bikeyMcBikeface = {
         name: 'Bikey McBikeface',
         email: 'bikey@bikeface.com',
         password: 'myFaceIsABike',
@@ -38,7 +39,6 @@ describe.only('Bike Aggregation', () => {
             });
     });
 
-    let bike1;
     beforeEach(() => {
         return saveBike({
             manufacturer: 'Trek',
@@ -50,10 +50,9 @@ describe.only('Bike Aggregation', () => {
             type: 'Road',
             owner: user._id
         })
-            .then(data => bike1 = data);
+            .then(data => trek = data);
     });
 
-    let bike2;
     beforeEach(() => {
         return saveBike({
             manufacturer: 'Giant',
@@ -65,32 +64,29 @@ describe.only('Bike Aggregation', () => {
             type: 'trail',
             owner: user._id
         })
-            .then(data => bike2 = data);
+            .then(data => giant = data);
     });
-    
 
-    const postModel = model => {
-        model.bikeyMcBikeface._id = bikeyMcBikeface._id;
+    it('saves a bike', () => {
+        assert.isOk(trek._id);
+        assert.isOk(giant._id);
+    });
+
+        
+    it('gets all bike models', () => {
         return request
-            .post('/models')
-            .set('Authorization', bikeyMcBikeface.token)
-            .send(model)
-            .then(({ body }) => {
-                model = body;
-            });
-    };
-
-    before(() => postModel(bike1));
-    // before(() => postModel(bike2));
-
-    it('Bike Models', () => {
-        return request
-            .get('/models')
+            .get('/api/bikes/models')
             .then(checkOk)
             .then(({ body }) => {
-                // assert.equal(body[0].bike1, 'Emonda');
-                // assert.equal(body[1].bike2, 'Fathom');
-                assert.deepEqual(body, [bike1, bike2]);
+                console.log(body);
+                assert.deepEqual(body, [{
+                    _id : 'Fathom',
+                    results: 1400
+                },
+                {
+                    _id: 'Emonda',
+                    results: 11299
+                }]);
             });
     });
 });

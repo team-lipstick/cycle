@@ -1,7 +1,6 @@
 const { assert } = require('chai');
-const { request, checkOk } = require('./request');
+const { request, save, checkOk } = require('./request');
 const { dropCollection } = require('./db');
-// const { checkOk } = request;
 
 const makeSimple = (bike, user) => {
     const simple = {
@@ -24,30 +23,30 @@ const makeSimple = (bike, user) => {
     return simple;
 };
 
+let trek;
+let giant;
+// eslint-disable-next-line
+let token;
+let user;
+let tokenTwo;
+// eslint-disable-next-line
+let userTwo;
+
+const bikeyMcBikeface = {
+    name: 'Bikey McBikeface',
+    email: 'bikey@bikeface.com',
+    password: 'myFaceIsABike',
+};
+
+const monGoosey = {
+    name: 'Mon Goosey',
+    email: 'goose@geese.com',
+    password: 'WeAreMongoose'
+};
+
 describe('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
-
-    let trek;
-    let giant;
-    // eslint-disable-next-line
-    let token;
-    let user;
-    
-    const bikeyMcBikeface = {
-        name: 'Bikey McBikeface',
-        email: 'bikey@bikeface.com',
-        password: 'myFaceIsABike',
-    };
-    
-    function saveBike(bike) {
-        return request
-            .post('/api/bikes')
-            .set('Authorization', token)
-            .send(bike)
-            .then(checkOk)
-            .then(({ body }) => body);    
-    }
 
     beforeEach(() => {
         return request
@@ -61,7 +60,18 @@ describe('Bikes API', () => {
     });
 
     beforeEach(() => {
-        return saveBike({
+        return request
+            .post('/api/auth/signup')
+            .send(monGoosey)
+            .then(checkOk)
+            .then(({ body }) => {
+                tokenTwo = body.token;
+                userTwo = body.user;
+            });
+    });
+
+    beforeEach(() => {
+        return save('bikes', {
             manufacturer: 'Trek',
             model: 'Emonda',
             year: 2017,
@@ -70,12 +80,12 @@ describe('Bikes API', () => {
             gender: 'womans',
             type: 'Road',
             owner: user._id
-        })
+        }, token)
             .then(data => trek = data);
     });
 
     beforeEach(() => {
-        return saveBike({
+        return save('bikes', {
             manufacturer: 'Giant',
             model: 'Fathom',
             year: 2016,
@@ -84,7 +94,7 @@ describe('Bikes API', () => {
             gender: 'mens',
             type: 'trail',
             owner: user._id
-        })
+        }, token)
             .then(data => giant = data);
     });
 
@@ -121,6 +131,17 @@ describe('Bikes API', () => {
                 assert.deepEqual(body.price, 10000);
             });
     });
+
+    it('prevents user from updating someone else\'s bike', () => {
+        trek.price = 5000;
+        return request
+            .put(`/api/bikes/${trek._id}`)
+            .set('Authorization', tokenTwo)
+            .then(res => {
+                assert.equal(res.status, 403);
+                assert.equal(res.body.error, 'Invalid user');
+            });
+    });
         
     it('deletes a bike', () => {
         return request
@@ -135,5 +156,15 @@ describe('Bikes API', () => {
             .then(({ body }) => {
                 assert.deepEqual(body.length, 1);
             });    
+    });
+
+    it('prevents user from deleting someone else\'s bike', () => {
+        return request
+            .delete(`/api/bikes/${giant._id}`)
+            .set('Authorization', tokenTwo)
+            .then(res => {
+                assert.equal(res.status, 403);
+                assert.equal(res.body.error, 'Invalid user');
+            });
     });
 });

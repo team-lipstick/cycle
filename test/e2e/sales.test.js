@@ -134,7 +134,7 @@ describe('Sale API', () => {
                     });
             });
     });
-  
+
     it.only('adds offer to offers field', () => {
         exampleSale.offers = {
             email: exampleUserOne._id,

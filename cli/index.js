@@ -1,46 +1,30 @@
-const program = require('commander');
-const { prompt } = require('inquirer');
-const { addUser } = require('./lib/routes/users');
+const Cycle = require('./cycle');
+const request = require('superagent');
+const API_URL = 'mongodb://localhost:27017/cycle';
 
-const questionsUser = [
-    {
-        type: 'list',
-        name: 'auth',
-        message: 'Sign in or sign up',
-        choices: [
-            { name: 'Sign in', value: 'signIn' },
-            { name: 'Sign up', value: 'signUp' }
-        ]
-    },
-    {
-        type: 'input',
-        name: 'name',
-        message: 'Enter User Name'
-    },
-    {
-        type: 'input',
-        name: 'email',
-        message: 'Enter User Email'
-    },
-    {
-        type: 'password',
-        name: 'hash',
-        mask: '*',
-        message: 'Enter User Password'
-    },
-];
+// eslint-disable-next-line
+let token = '';
 
-program
-    .version('1.0.0')
-    .description('Cycle Management System');
+const bike = {
+    signup(credentials) {
+        return request
+            .post(`${API_URL}/auth/signup`)
+            .send(credentials)
+            .then(({ body }) => {
+                token = body.token;
+                return body;
+            });
+    },
+    signin(credentials) {
+        return request
+            .post(`${API_URL}/auth/signin`)
+            .send(credentials)
+            .then(({ body }) => {
+                token = body.token;
+                return body;
+            });
+    },
+};
 
-program
-    .command('add user')
-    .alias('au')
-    .description('Add a User')
-    .action(() => {
-        prompt(questionsUser)
-            .then(answers => addUser(answers));
-    });
-
-program.parse(process.argv);
+const cycle = new Cycle(bike);
+cycle.start();

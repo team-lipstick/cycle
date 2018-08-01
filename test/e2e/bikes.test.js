@@ -44,7 +44,7 @@ const monGoosey = {
     password: 'WeAreMongoose'
 };
 
-describe.only('Bikes API', () => {
+describe('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
 

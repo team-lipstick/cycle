@@ -1,0 +1,29 @@
+[
+    {
+        "_id": {
+            "$oid": "5b60af4a0962d456fab3c5ca"
+        },
+        "name": "Bikey McBikeface",
+        "email": "bikey@bikeface.com",
+        "hash": "$2a$08$tT4i1Er/hfUp.hxT70NeR.qXuKafPzMLnwuWPwcOlSyXRG6RR/zlG",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b60af4a0962d456fab3c5cb"
+        },
+        "name": "Mon Goosey",
+        "email": "mongoose@mongeese.com",
+        "hash": "$2a$08$Wi6.S7WXMM/Vx/bfg2NoX.VNmr3TtrUZmiCYh/gv4jX13CFjl2wBi",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b60af4a0962d456fab3c5cc"
+        },
+        "name": "Cycley Wheelmeister",
+        "email": "thecyclinator@wheelies.org",
+        "hash": "$2a$08$CrsWs3JYYUd7z6JEaYipNuMfxNFLkWZXPPaZEam8EyOkghpPBTUhi",
+        "__v": 0
+    }
+]

@@ -1,30 +1,9 @@
 const { assert } = require('chai');
-const { request, checkOk } = require('./request');
+const { request } = require('./request');
 const { dropCollection } = require('./db');
-// const { checkOk } = request;
+const { checkOk } = request;
 
-const makeSimple = (bike, user) => {
-    const simple = {
-        _id: bike._id,
-        manufacturer: bike.manufacturer,
-        model: bike.model,
-        year: bike.year,
-        price: bike.price,
-        speeds: bike.speeds,
-        gender: bike.gender,
-        type: bike.type
-    };
-
-    if(user) {
-        simple.owner = {
-            _id: user._id,
-            name: user.name
-        };
-    }
-    return simple;
-};
-
-describe('Bikes API', () => {
+describe('Bikes Aggregation API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
 
@@ -90,50 +69,24 @@ describe('Bikes API', () => {
 
     it('saves a bike', () => {
         assert.isOk(trek._id);
+        assert.isOk(giant._id);
     });
 
-    it('gets a bike by id', () => {
-        return request
-            .get(`/api/bikes/${trek._id}`)
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body, makeSimple(trek, user));
-            });     
-    });
         
-    it('gets all bikes', () => {
+    it('gets all bike models', () => {
         return request
-            .get('/api/bikes')
+            .get('/api/bikes/models')
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [makeSimple(trek, user), makeSimple(giant, user)]);
+                console.log(body);
+                assert.deepEqual(body, [{
+                    _id : 'Fathom',
+                    results: 1400
+                },
+                {
+                    _id: 'Emonda',
+                    results: 11299
+                }]);
             });
-    });
-     
-    it('updates a bike', () => {
-        trek.price = 10000;
-        return request  
-            .put(`/api/bikes/${trek._id}`)
-            .set('Authorization', token)
-            .send(trek)
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body.price, 10000);
-            });
-    });
-        
-    it('deletes a bike', () => {
-        return request
-            .delete(`/api/bikes/${giant._id}`)
-            .set('Authorization', token)
-            .then(checkOk)
-            .then(res => {
-                assert.deepEqual(res.body, { removed: true });
-                return request.get('/api/bikes');
-            })
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body.length, 1);
-            });    
     });
 });

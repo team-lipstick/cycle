@@ -3,7 +3,6 @@ const { request, checkOk } = require('./request');
 const { dropCollection } = require('./db');
 
 describe.only('Users API', () => {
-
     beforeEach(() => dropCollection('users'));
 
     let tokenTwo;

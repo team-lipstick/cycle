@@ -3,12 +3,13 @@ const { request } = require('./request');
 const { dropCollection } = require('./db');
 const { checkOk } = request;
 
-describe('Bikes API', () => {
+describe.only('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
 
     let trek;
     let giant;
+    let huffy;
     // eslint-disable-next-line
     let token;
     let user;
@@ -66,6 +67,20 @@ describe('Bikes API', () => {
         })
             .then(data => giant = data);
     });
+    // For Creating Mock Bike Data
+    // beforeEach(() => {
+    //     return saveBike({
+    //         manufacturer: 'Huffy',
+    //         model: 'Alpine',
+    //         year: 2015,
+    //         price: 800,
+    //         speeds: 18,
+    //         gender: 'mens',
+    //         type: 'trail',
+    //         owner: user._id
+    //     })
+    //         .then(data => huffy = data);
+    // });
 
     it('saves a bike', () => {
         assert.isOk(trek._id);

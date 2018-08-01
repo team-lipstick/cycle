@@ -5,6 +5,7 @@ const { checkOk, save, request, simplify } = require('./request');
 let exampleSale;
 let exampleUserOne;
 let exampleBike;
+let token;
 
 const userOne = {
     name: 'Bikey McBikeface',
@@ -12,7 +13,7 @@ const userOne = {
     password: 'myFaceIsABike'
 };
 
-describe('Sale API', () => {
+describe.only('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');
@@ -26,6 +27,7 @@ describe('Sale API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 exampleUserOne = body.user;
+                token = body.token;
             });
     });
         
@@ -40,7 +42,7 @@ describe('Sale API', () => {
                 gender: 'womans',
                 type: 'Road',
                 owner: exampleUserOne._id
-            })
+            }, token)
             .then(bike => {
                 exampleBike = bike;
             });
@@ -50,7 +52,7 @@ describe('Sale API', () => {
         return save('sales', 
             {
                 bike: exampleBike._id,
-            })
+            }, token)
             .then(sale => {
                 exampleSale = sale;
             });
@@ -97,6 +99,7 @@ describe('Sale API', () => {
     it('deletes a sale', () => {
         return request
             .delete(`/api/sales/${exampleSale._id}`)
+            .set('Authorization', token)
             .then(checkOk)
             .then(({ body }) => {
                 assert.strictEqual(body.removed, true);
@@ -116,6 +119,7 @@ describe('Sale API', () => {
         
         return request
             .put(`/api/sales/${exampleSale._id}`)
+            .set('Authorization', token)
             .send(exampleSale)
             .then(checkOk)
             .then(({ body }) => {

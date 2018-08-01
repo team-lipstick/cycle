@@ -1,19 +1,18 @@
 const { assert } = require('chai');
 const { request } = require('./request');
-const { dropCollection } = require('./db');
 const { checkOk } = request;
+const { dropCollection } = require('./db');
 
-describe('Bikes API', () => {
+describe.only('Bike Aggregation', () => {
+
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
 
-    let trek;
-    let giant;
     // eslint-disable-next-line
     let token;
     let user;
     
-    const bikeyMcBikeface = {
+    let bikeyMcBikeface = {
         name: 'Bikey McBikeface',
         email: 'bikey@bikeface.com',
         password: 'myFaceIsABike',
@@ -39,6 +38,7 @@ describe('Bikes API', () => {
             });
     });
 
+    let bike1;
     beforeEach(() => {
         return saveBike({
             manufacturer: 'Trek',
@@ -50,9 +50,10 @@ describe('Bikes API', () => {
             type: 'Road',
             owner: user._id
         })
-            .then(data => trek = data);
+            .then(data => bike1 = data);
     });
 
+    let bike2;
     beforeEach(() => {
         return saveBike({
             manufacturer: 'Giant',
@@ -64,55 +65,32 @@ describe('Bikes API', () => {
             type: 'trail',
             owner: user._id
         })
-            .then(data => giant = data);
+            .then(data => bike2 = data);
     });
+    
 
-    it('saves a bike', () => {
-        assert.isOk(trek._id);
-    });
+    const postModel = model => {
+        model.bikeyMcBikeface._id = bikeyMcBikeface._id;
+        return request
+            .post('/models')
+            .set('Authorization', bikeyMcBikeface.token)
+            .send(model)
+            .then(({ body }) => {
+                model = body;
+            });
+    };
 
-    it('gets a bike by id', () => {
+    before(() => postModel(bike1));
+    // before(() => postModel(bike2));
+
+    it('Bike Models', () => {
         return request
-            .get(`/api/bikes/${trek._id}`)
+            .get('/models')
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, trek);
-            });     
-    });
-        
-    it('gets all bikes', () => {
-        return request
-            .get('/api/bikes')
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body, [trek, giant]);
+                // assert.equal(body[0].bike1, 'Emonda');
+                // assert.equal(body[1].bike2, 'Fathom');
+                assert.deepEqual(body, [bike1, bike2]);
             });
-    });
-     
-    it('updates a bike', () => {
-        trek.price = 10000;
-        return request  
-            .put(`/api/bikes/${trek._id}`)
-            .set('Authorization', token)
-            .send(trek)
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body.price, 10000);
-            });
-    });
-        
-    it('deletes a bike', () => {
-        return request
-            .delete(`/api/bikes/${giant._id}`)
-            .set('Authorization', token)
-            .then(checkOk)
-            .then(res => {
-                assert.deepEqual(res.body, { removed: true });
-                return request.get('/api/bikes');
-            })
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body.length, 1);
-            });    
     });
 });

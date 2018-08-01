@@ -1,0 +1,82 @@
+[
+    {
+        "_id": {
+            "$oid": "5b60ed9127908f6325483984"
+        },
+        "manufacturer": "Trek",
+        "model": "Emonda",
+        "year": 2017,
+        "price": 11299,
+        "speeds": 11,
+        "gender": "womans",
+        "type": "road",
+        "owner": {
+            "$oid": "5b60af4a0962d456fab3c5ca"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b60ed9127908f6325483985"
+        },
+        "manufacturer": "Mongoose",
+        "model": "LooseyGoosey",
+        "year": 2015,
+        "price": 5000,
+        "speeds": 51,
+        "gender": "mens",
+        "type": "trail",
+        "owner": {
+            "$oid": "5b60af4a0962d456fab3c5cb"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b60ed9127908f6325483986"
+        },
+        "manufacturer": "Mongoose",
+        "model": "AwesomeGoose",
+        "year": 2012,
+        "price": 2000,
+        "speeds": 51,
+        "gender": "mens",
+        "type": "trail",
+        "owner": {
+            "$oid": "5b60af4a0962d456fab3c5cb"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b60ed9127908f6325483987"
+        },
+        "manufacturer": "Mongoose",
+        "model": "LooseyGoosey",
+        "year": 2014,
+        "price": 6000,
+        "speeds": 51,
+        "gender": "mens",
+        "type": "trail",
+        "owner": {
+            "$oid": "5b60af4a0962d456fab3c5cb"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b60ed9127908f6325483988"
+        },
+        "manufacturer": "Giant",
+        "model": "Fathom",
+        "year": 2016,
+        "price": 1400,
+        "speeds": 21,
+        "gender": "mens",
+        "type": "road",
+        "owner": {
+            "$oid": "5b60af4a0962d456fab3c5cc"
+        },
+        "__v": 0
+    }
+]

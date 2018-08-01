@@ -22,6 +22,7 @@ describe('Bikes API', () => {
     function saveBike(bike) {
         return request
             .post('/api/bikes')
+            .set('Authorization', token)
             .send(bike)
             .then(checkOk)
             .then(({ body }) => body);    
@@ -76,8 +77,7 @@ describe('Bikes API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 assert.deepEqual(body, trek);
-            });
-            
+            });     
     });
         
     it('gets all bikes', () => {
@@ -93,6 +93,7 @@ describe('Bikes API', () => {
         trek.price = 10000;
         return request  
             .put(`/api/bikes/${trek._id}`)
+            .set('Authorization', token)
             .send(trek)
             .then(checkOk)
             .then(({ body }) => {
@@ -103,6 +104,7 @@ describe('Bikes API', () => {
     it('deletes a bike', () => {
         return request
             .delete(`/api/bikes/${giant._id}`)
+            .set('Authorization', token)
             .then(checkOk)
             .then(res => {
                 assert.deepEqual(res.body, { removed: true });

@@ -8,16 +8,6 @@ describe('Sale model', () => {
     it('validates good model', () => {
         const data = {
             bike: Types.ObjectId(),
-            // offers: [{
-            //     buyer: Types.ObjectId(),
-            //     bestOffer: 75,
-            //     accepted: false
-            // },
-            // {
-            //     buyer: Types.ObjectId(),
-            //     bestOffer: 95,
-            //     accepted: true
-            // }],
             sold: false
         };
     
@@ -36,31 +26,12 @@ describe('Sale model', () => {
         assert.equal(errors.bike.kind, 'required');
     });
 
-    it.skip('validates sold field', () => {
+    it('validates sold field', () => {
         const data = {
-            bike: Types.ObjectId()
-            // seller: {
-            //     user: Types.ObjectId(),
-            //     askingPrice: 100,
-            // },
-            // offers: [{
-            //     buyer: Types.ObjectId(),
-            //     bestOffer: 75,
-            //     accepted: false
-            // },
-            // {
-            //     buyer: Types.ObjectId(),
-            //     bestOffer: 95,
-            //     accepted: true
-            // }]
+            bike: Types.ObjectId() 
         };
+        
         const sale = new Sale(data);
-        assert.isUndefined(sale.sold.user);
-        assert.isUndefined(sale.sold.finalPrice);
-        assert.isUndefined(sale.sold.date);
-
-        sale.checkIfSold();
-        assert.isDefined(sale.sold);
-        assert.deepEqual(sale.sold.finalPrice, 95);
+        assert.strictEqual(sale.sold, false);
     });
 });

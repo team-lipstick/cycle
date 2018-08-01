@@ -30,7 +30,7 @@ describe.skip('Bikes API', () => {
 
     beforeEach(() => {
         return request
-            .post('/api/users/signup')
+            .post('/api/auth/signup')
             .send(bikeyMcBikeface)
             .then(checkOk)
             .then(({ body }) => {

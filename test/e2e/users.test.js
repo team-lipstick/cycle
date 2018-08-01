@@ -2,98 +2,80 @@ const { assert } = require('chai');
 const { request, checkOk } = require('./request');
 const { dropCollection } = require('./db');
 
-const userOne = {
-    name: 'Bikey McBikeface',
-    email: 'bikey@bikeface.com',
-    password: 'myFaceIsABike'
-};
-
-const userTwo = {
-    name: 'Mon Goosey',
-    email: 'mongoose@mongeese.com',
-    password: 'iAmMongooseHearMeRoar'
-};
-
-const badPassword = {
-    name: 'Bikey McBikeface',
-    email: 'bikey@bikeface.com',
-    password: 'myBikeIsAFace'
-};
-
-const badEmail = {
-    name: 'Bikey McBikeface',
-    email: 'bk@bkfc.com',
-    password: 'myBikeIsAFace'
-};
-
-let tokenOne;
-let tokenTwo;
-
-describe.skip('Users API', () => {
+describe.only('Users API', () => {
     beforeEach(() => dropCollection('users'));
 
-    beforeEach(() => {
-        return request
-            .post('/api/users/signup')
-            .send(userOne)
-            .then(checkOk)
-            .then(({ body }) => {
-                tokenOne = body.token;
-            });
-    });
+    let tokenTwo;
+    let mongoosey;
+    let userTwo = {
+        name: 'Mon Goosey',
+        email: 'mongoose@mongeese.com',
+        password: 'iAmMongooseHearMeRoar'
+    };
 
     beforeEach(() => {
         return request
-            .post('/api/users/signup')
+            .post('/api/auth/signup')
             .send(userTwo)
             .then(checkOk)
             .then(({ body }) => {
                 tokenTwo = body.token;
+                mongoosey = body.user;
             });
     });
-
+        
     it('signs up a user', () => {
-        assert.isDefined(tokenOne);
         assert.isDefined(tokenTwo);
     });
-
-    it('can sign in a user', () => {
-        return request
-            .post('/api/users/signin')
-            .send(userOne)
+        
+    it('signs in a user', () => {
+        assert.isOk(mongoosey._id);
+    });
+        
+    it('gets a list of users', () => {
+        return request 
+            .get('/api/users')
             .then(checkOk)
             .then(({ body }) => {
-                assert.isDefined(body.token);
+                
+                assert.deepEqual(body, [mongoosey]);
             });
     });
-
-    it('fails when given wrong password', () => {
+        
+    it('gets a user by id', () => {
         return request
-            .post('/api/users/signin')
-            .send(badPassword)
-            .then(res => {
-                assert.equal(res.status, 401);
-                assert.equal(res.body.error, 'Invalid email or password');
+            .get(`/api/users/${mongoosey._id}`)
+            .then(checkOk)
+            .then(({ body }) => {
+                mongoosey = body;
+                assert.deepEqual(body, mongoosey);
             });
     });
-
-    it('cannot sign up with same email', () => {
+        
+    it('updates a user', () => {
+        mongoosey.email = 'mongoose666@mongeese.com';
         return request
-            .post('/api/users/signup')
-            .send(userOne)
-            .then(res => {
-                assert.equal(res.status, 400);
-                assert.equal(res.body.error, 'Email already in use');
+            .put(`/api/users/${mongoosey._id}`)
+            .send(mongoosey)
+            .then(checkOk)
+            .then(({ body }) => {
+                // console.log('** body', body);
+                assert.deepEqual(body.email, mongoosey.email);
             });
     });
-
-    it('gives a 404 on bad email signin', () => {
-        return request
-            .post('/api/users/signin')
-            .send(badEmail)
+    
+    it('deletes a user', () => {
+        return request  
+            .delete(`/api/users/${mongoosey._id}`)
+            .then(checkOk)
             .then(res => {
-                assert.equal(res.status, 401);
-                assert.equal(res.body.error, 'Invalid email or password');
+                assert.deepEqual(res.body, { removed:true });
+                return request
+                    .get('/api/users');
+            })
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, []);
             });
     });
 });

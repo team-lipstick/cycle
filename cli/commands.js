@@ -2,7 +2,7 @@
 const program = require('commander');
 const { prompt } = require('inquirer');
 // const { addUser } = require('../cycle/cli/lib/routes/users');
-const { addBike, findBike, updateBike, removeBike, listBikes } = require('../cycle/cli/lib/routes/bikes');
+const { addBike, findBike, updateBike, removeBike, listBikes } = require('./lib/routes/bikes');
 
 // const questionsUser = [
 //     {

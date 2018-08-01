@@ -1,4 +1,3 @@
-/* eslint no-console: off */
 const { assert } = require('chai');
 const { request } = require('./request');
 const { dropCollection } = require('./db');
@@ -79,7 +78,6 @@ describe('Bikes Aggregation API', () => {
             .get('/api/bikes/models')
             .then(checkOk)
             .then(({ body }) => {
-                console.log(body);
                 assert.deepEqual(body, [{
                     _id : 'Fathom',
                     price: 1400
@@ -96,7 +94,6 @@ describe('Bikes Aggregation API', () => {
             .get('/api/bikes/manufacturers')
             .then(checkOk)
             .then(({ body }) => {
-                console.log(body);
                 assert.deepEqual(body, [{
                     _id : 'Giant',
                     model: 'Fathom'
@@ -113,7 +110,6 @@ describe('Bikes Aggregation API', () => {
             .get('/api/bikes/genders')
             .then(checkOk)
             .then(({ body }) => {
-                console.log(body);
                 assert.deepEqual(body, [{
                     _id : 'mens',
                     model: 'Fathom',
@@ -132,7 +128,6 @@ describe('Bikes Aggregation API', () => {
             .get('/api/bikes/types')
             .then(checkOk)
             .then(({ body }) => {
-                console.log(body);
                 assert.deepEqual(body, [{
                     _id : 'trail',
                     model: 'Fathom',

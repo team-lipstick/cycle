@@ -64,7 +64,7 @@ describe('Users API', () => {
             });
     });
     
-    xit('deletes a user', () => {
+    it('deletes a user', () => {
         return request  
             .delete(`/api/users/${mongoosey._id}`)
             .set('Authorization', tokenTwo)

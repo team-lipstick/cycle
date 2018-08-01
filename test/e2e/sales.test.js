@@ -13,7 +13,7 @@ const userOne = {
     password: 'myFaceIsABike'
 };
 
-describe.skip('Sale API', () => {
+describe('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');

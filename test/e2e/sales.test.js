@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 const { dropCollection } = require('./db');
-const { checkOk, save, request, simplify } = require('./request');
+const { checkOk, save, request, makeSimple } = require('./request');
 
 let exampleSale;
 let exampleUserOne;
@@ -52,6 +52,10 @@ describe('Sale API', () => {
         return save('sales', 
             {
                 bike: exampleBike._id,
+                offers: [{
+                    email: exampleUserOne._id,
+                    offer: 50
+                }]
             }, token)
             .then(sale => {
                 exampleSale = sale;
@@ -63,40 +67,28 @@ describe('Sale API', () => {
     });
 
     it('gets all sales', () => {
-        const sale = { 
-            sold: false,
-            bike:
-             {   _id: exampleBike._id,
-                 model: 'Emonda',
-                 price: 11299 } 
-        };
+        
         return request
             .get('/api/sales')
             .then(checkOk)
             .then(({ body }) => {
-                body.forEach(s => delete s._id);
-                delete exampleSale.offers;
                 delete exampleSale.__v;
-                delete exampleSale._id;
-                assert.deepEqual(body, [sale]);
+                assert.deepEqual(body, [makeSimple(exampleSale, exampleBike)]);
             });
     });
 
     it('gets a sale by id', () => {
-        const sale = {
-            bike: simplify(exampleBike),
-            sold: false
-        };
+    
         return request
             .get(`/api/sales/${exampleSale._id}`)
             .then(checkOk)
             .then(({ body }) => {
-                delete body._id;
-                assert.deepEqual(body, sale);
+                delete body.bike.owner;
+                assert.deepEqual(body, makeSimple(exampleSale, exampleBike));
             });
     });
 
-    it.skip('deletes a sale', () => {
+    it('deletes a sale', () => {
         return request
             .delete(`/api/sales/${exampleSale._id}`)
             .set('Authorization', token)
@@ -114,7 +106,7 @@ describe('Sale API', () => {
             });
     });
 
-    it.skip('updates sold field and removes sold bike', () => {
+    it('updates sold field and removes sold bike', () => {
         exampleSale.sold = true;
         
         return request
@@ -135,19 +127,19 @@ describe('Sale API', () => {
             });
     });
 
-    it.only('adds offer to offers field', () => {
-        exampleSale.offers = {
+    it('adds offer to offers field', () => {
+        const data = {
             email: exampleUserOne._id,
             offer: 200
         };
         return request
-            .put(`/api/sales/${exampleSale._id}/offers`)
+            .post(`/api/sales/${exampleSale._id}/offers`)
             .set('Authorization', token)
-            .send(exampleSale)
+            .send(data)
             .then(checkOk)
             .then(({ body }) => {
-                console.log('** body ', body);
-                assert.deepEqual(200, body.offers[0].offer);
+                assert.equal(body.offers.length, 2);
+                assert.deepEqual(200, body.offers[1].offer);
                 assert.deepEqual(exampleUserOne._id, body.offers[0].email);
             });
     });

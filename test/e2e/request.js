@@ -21,6 +21,23 @@ const simplify = data => {
     return simple;
 };
 
+const makeSimple = (sale, bike) => {
+    const simple = {
+        _id: sale._id,
+        offers: sale.offers,
+        sold: sale.sold
+    };
+
+    if(bike) {
+        simple.bike = {
+            _id: bike._id,
+            model: bike.model,
+            price: bike.price
+        };
+    }
+    return simple;
+};
+
 const save = (path, data, token = null) => {
     return request
         .post(`/api/${path}`)
@@ -46,5 +63,6 @@ module.exports = {
     save,
     addOffer,
     checkOk,
-    simplify
+    simplify,
+    makeSimple
 };

@@ -3,7 +3,7 @@ const { request } = require('./request');
 const { dropCollection } = require('./db');
 const { checkOk } = request;
 
-describe('Bikes API', () => {
+describe('Bikes Aggregation API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
 
@@ -69,50 +69,24 @@ describe('Bikes API', () => {
 
     it('saves a bike', () => {
         assert.isOk(trek._id);
+        assert.isOk(giant._id);
     });
 
-    it('gets a bike by id', () => {
-        return request
-            .get(`/api/bikes/${trek._id}`)
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body, trek);
-            });     
-    });
         
-    it('gets all bikes', () => {
+    it('gets all bike models', () => {
         return request
-            .get('/api/bikes')
+            .get('/api/bikes/models')
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [trek, giant]);
+                console.log(body);
+                assert.deepEqual(body, [{
+                    _id : 'Fathom',
+                    results: 1400
+                },
+                {
+                    _id: 'Emonda',
+                    results: 11299
+                }]);
             });
-    });
-     
-    it('updates a bike', () => {
-        trek.price = 10000;
-        return request  
-            .put(`/api/bikes/${trek._id}`)
-            .set('Authorization', token)
-            .send(trek)
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body.price, 10000);
-            });
-    });
-        
-    it('deletes a bike', () => {
-        return request
-            .delete(`/api/bikes/${giant._id}`)
-            .set('Authorization', token)
-            .then(checkOk)
-            .then(res => {
-                assert.deepEqual(res.body, { removed: true });
-                return request.get('/api/bikes');
-            })
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body.length, 1);
-            });    
     });
 });

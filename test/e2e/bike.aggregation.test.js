@@ -1,3 +1,4 @@
+/* eslint no-console: off */
 const { assert } = require('chai');
 const { request } = require('./request');
 const { dropCollection } = require('./db');
@@ -47,7 +48,7 @@ describe('Bikes Aggregation API', () => {
             price: 11299,
             speeds: 11,
             gender: 'womans',
-            type: 'Road',
+            type: 'road',
             owner: user._id
         })
             .then(data => trek = data);
@@ -73,7 +74,7 @@ describe('Bikes Aggregation API', () => {
     });
 
         
-    it('gets all bike models', () => {
+    it('gets bikes by models with price', () => {
         return request
             .get('/api/bikes/models')
             .then(checkOk)
@@ -81,11 +82,66 @@ describe('Bikes Aggregation API', () => {
                 console.log(body);
                 assert.deepEqual(body, [{
                     _id : 'Fathom',
-                    results: 1400
+                    price: 1400
                 },
                 {
                     _id: 'Emonda',
-                    results: 11299
+                    price: 11299
+                }]);
+            });
+    });
+
+    it('gets bikes by manufacturers with model', () => {
+        return request
+            .get('/api/bikes/manufacturers')
+            .then(checkOk)
+            .then(({ body }) => {
+                console.log(body);
+                assert.deepEqual(body, [{
+                    _id : 'Giant',
+                    model: 'Fathom'
+                },
+                {
+                    _id: 'Trek',
+                    model: 'Emonda'
+                }]);
+            });
+    });
+
+    it('gets bike models by gender with price', () => {
+        return request
+            .get('/api/bikes/genders')
+            .then(checkOk)
+            .then(({ body }) => {
+                console.log(body);
+                assert.deepEqual(body, [{
+                    _id : 'mens',
+                    model: 'Fathom',
+                    price: 1400
+                },
+                {
+                    _id: 'womans',
+                    model: 'Emonda',
+                    price: 11299
+                }]);
+            });
+    });
+
+    it('gets bike models by type with price', () => {
+        return request
+            .get('/api/bikes/types')
+            .then(checkOk)
+            .then(({ body }) => {
+                console.log(body);
+                assert.deepEqual(body, [{
+                    _id : 'trail',
+                    model: 'Fathom',
+                    price: 1400
+                },
+                {
+                    _id: 'road',
+                    model: 'Emonda',
+                    price: 11299
                 }]);
             });
     });

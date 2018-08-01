@@ -126,7 +126,7 @@ describe('Sale API', () => {
                     });
             });
     });
-  
+
     it('adds offer to offers field', () => {
         const data = {
             email: exampleUserOne._id,

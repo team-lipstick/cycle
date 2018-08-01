@@ -39,11 +39,11 @@ const questionsBike = [
         name: 'type',
         message: 'Bike Type '
     },
-    {
-        type: 'input',
-        name: 'owner',
-        message: 'Bike Owner'
-    },
+    // {
+    //     type: 'input',
+    //     name: 'owner',
+    //     message: 'Bike Owner'
+    // },
 ];
 
 const priceBike = [

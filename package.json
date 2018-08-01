@@ -16,7 +16,10 @@
     "test:unit:watch": "nodemon --exec 'npm run -s test:unit'",
     "test:e2e:watch": "nodemon --exec 'npm run -s test:e2e'",
     "start": "node server.js",
-    "start:watch": "nodemon server.js"
+    "start:watch": "nodemon server.js",
+    "db:load:users": "mongoimport --drop --db cycle --collection users --jsonArray --file ./seed-data/users-seed.json",
+    "db:load:bikes": "mongoimport --drop --db cycle --collection bikes --jsonArray --file ./seed-data/bikes-seed.json",
+    "db:load:all": "npm run db:load:users && npm run db:load:bikes"
   },
   "repository": {
     "type": "git",

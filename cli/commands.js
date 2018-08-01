@@ -1,36 +1,7 @@
 #!/usr/bin/env node
 const program = require('commander');
 const { prompt } = require('inquirer');
-// const { addUser } = require('../cycle/cli/lib/routes/users');
 const { addBike, findBike, updateBike, removeBike, listBikes } = require('./lib/routes/bikes');
-
-// const questionsUser = [
-//     {
-//         type: 'list',
-//         name: 'auth',
-//         message: 'Sign in or sign up',
-//         choices: [
-//             { name: 'Sign in', value: 'signIn' },
-//             { name: 'Sign up', value: 'signUp' }
-//         ]
-//     },
-//     {
-//         type: 'input',
-//         name: 'name',
-//         message: 'Enter User Name'
-//     },
-//     {
-//         type: 'input',
-//         name: 'email',
-//         message: 'User User Email'
-//     },
-//     {
-//         type: 'password',
-//         name: 'hash',
-//         mask: '*',
-//         message: 'Enter User Password'
-//     },
-// ];
 
 const questionsBike = [
     {
@@ -86,16 +57,7 @@ const priceBike = [
 program
     .version('1.0.0')
     .description('Cycle Management System');
-
-// program
-//     .command('add user')
-//     .alias('au')
-//     .description('Add a User')
-//     .action(() => {
-//         prompt(questionsUser)
-//             .then(answers => addUser(answers));
-//     });
-
+    
 program
     .command('add bike')
     .alias('ab')

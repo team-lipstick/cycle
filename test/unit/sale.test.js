@@ -3,18 +3,22 @@ const { getErrors } = require('./helper');
 const Sale = require('../../lib/models/sale');
 const { Types } = require('mongoose');
 
-describe('Sale model', () => {
+describe.only('Sale model', () => {
 
     it('validates good model', () => {
         const data = {
             bike: Types.ObjectId(),
+            offers: [{
+                email:  Types.ObjectId(),
+                offer: 100
+            }],
             sold: false
         };
     
         const sale = new Sale(data);
         const json = sale.toJSON();
         delete json._id;
-        // json.bike.forEach(b => delete b._id);
+        json.offers.forEach(o => delete o._id);
 
         assert.isUndefined(sale.validateSync());
         assert.deepEqual(json, data);
@@ -33,5 +37,19 @@ describe('Sale model', () => {
         
         const sale = new Sale(data);
         assert.strictEqual(sale.sold, false);
+    });
+
+    it('test for min offer amount required', () => {
+        const data = {
+            bike: Types.ObjectId(),
+            offers: [{
+                email:  Types.ObjectId(),
+                offer: 0
+            }]
+        };
+
+        const sale = new Sale(data);
+        const errors = getErrors(sale.validateSync(), 1);
+        assert.equal(errors['offers.0.offer'].kind, 'min');
     });
 });

@@ -119,7 +119,7 @@ describe('Bikes API', () => {
                 assert.deepEqual(body, [makeSimple(trek, user), makeSimple(giant, user)]);
             });
     });
-        
+     
     it('updates a bike', () => {
         trek.price = 10000;
         return request  

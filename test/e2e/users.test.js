@@ -102,7 +102,7 @@ describe('Users API', () => {
             .set('Authorization', token)
             .then(checkOk)
             .then(res => {
-                assert.deepEqual(res.body, { removed:true });
+                assert.deepEqual(res.body, { removed: true });
                 return request
                     .get('/api/users');
             })

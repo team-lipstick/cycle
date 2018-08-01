@@ -96,7 +96,7 @@ describe('Sale API', () => {
             });
     });
 
-    it('deletes a sale', () => {
+    it.skip('deletes a sale', () => {
         return request
             .delete(`/api/sales/${exampleSale._id}`)
             .set('Authorization', token)
@@ -114,7 +114,7 @@ describe('Sale API', () => {
             });
     });
 
-    it('updates sold field and removes sold bike', () => {
+    it.skip('updates sold field and removes sold bike', () => {
         exampleSale.sold = true;
         
         return request
@@ -132,6 +132,23 @@ describe('Sale API', () => {
                     .then(({ body }) => {
                         assert.deepEqual(body, []);
                     });
+            });
+    });
+
+    it.only('adds offer to offers field', () => {
+        exampleSale.offers = {
+            email: exampleUserOne._id,
+            offer: 200
+        };
+        return request
+            .put(`/api/sales/${exampleSale._id}/offers`)
+            .set('Authorization', token)
+            .send(exampleSale)
+            .then(checkOk)
+            .then(({ body }) => {
+                console.log('** body ', body);
+                assert.deepEqual(200, body.offers[0].offer);
+                assert.deepEqual(exampleUserOne._id, body.offers[0].email);
             });
     });
 });

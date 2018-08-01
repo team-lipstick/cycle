@@ -1,6 +1,7 @@
 /* eslint no-console: off */
 const mongoose = require('mongoose');
 const Bike =  require('../models/bike');
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/cycle', { useNewUrlParser: true });
 
 const addBike = (bike) => {

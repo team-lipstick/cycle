@@ -24,6 +24,30 @@ const bike = {
                 return body;
             });
     },
+    postBike() {
+        return request
+            .post(`${API_URL}/bikes`)
+            .set('Authorization', token)
+            .then(({ body }) => body);
+    },
+    getBike() {
+        return request
+            .get(`${API_URL}/bikes`)
+            .set('Authorization', token)
+            .then(({ body }) => body);
+    },
+    updateBike() {
+        return request
+            .put(`${API_URL}/bikes`)
+            .set('Authorization', token)
+            .then(({ body }) => body);
+    },
+    deleteBike() {
+        return request
+            .del(`${API_URL}/bikes`)
+            .set('Authorization', token)
+            .then(({ body }) => body);
+    },
 };
 
 const cycle = new Cycle(bike);

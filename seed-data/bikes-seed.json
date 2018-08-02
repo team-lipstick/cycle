@@ -8,7 +8,6 @@
         "year": 2017,
         "price": 11299,
         "speeds": 11,
-        "gender": "womans",
         "type": "road",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5ca"
@@ -24,7 +23,6 @@
         "year": 2015,
         "price": 5000,
         "speeds": 51,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cb"
@@ -40,7 +38,6 @@
         "year": 2012,
         "price": 2000,
         "speeds": 51,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cb"
@@ -56,7 +53,6 @@
         "year": 2014,
         "price": 6000,
         "speeds": 51,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cb"
@@ -72,7 +68,6 @@
         "year": 2016,
         "price": 1400,
         "speeds": 21,
-        "gender": "mens",
         "type": "road",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cc"
@@ -88,7 +83,6 @@
         "year": 2015,
         "price": 800,
         "speeds": 18,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b6334ae3afe3eed4058a5d3"
@@ -104,7 +98,6 @@
         "year": 2015,
         "price": 800,
         "speeds": 18,
-        "gender": "mens",
         "type": "road",
         "owner": {
             "$oid": "5b6334ae3afe3eed4058a5d2"
@@ -120,7 +113,6 @@
         "year": 2016,
         "price": 700,
         "speeds": 18,
-        "gender": "mens",
         "type": "road",
         "owner": {
             "$oid": "5b6334ae3afe3eed4058a5d1"
@@ -136,7 +128,6 @@
         "year": 2018,
         "price": 3000,
         "speeds": 21,
-        "gender": "womens",
         "type": "trail",
         "owner": {
             "$oid": "5b6334ae3afe3eed4058a5d0"
@@ -152,7 +143,6 @@
         "year": 2018,
         "price": 2000,
         "speeds": 18,
-        "gender": "womens",
         "type": "trail",
         "owner": {
             "$oid": "5b6334ae3afe3eed4058a5cf"
@@ -168,7 +158,6 @@
         "year": 2018,
         "price": 500,
         "speeds": 18,
-        "gender": "womens",
         "type": "road",
         "owner": {
             "$oid": "5b6334ae3afe3eed4058a5ce"
@@ -184,7 +173,6 @@
         "year": 2018,
         "price": 750,
         "speeds": 18,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b6334ae3afe3eed4058a5cd"
@@ -200,7 +188,6 @@
         "year": 2017,
         "price": 3600,
         "speeds": 18,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b6334ad3afe3eed4058a5cc"

@@ -28,7 +28,6 @@ let giant;
 let token;
 let user;
 let tokenTwo;
-
 // eslint-disable-next-line
 let userTwo;
 
@@ -43,7 +42,6 @@ const monGoosey = {
     email: 'goose@geese.com',
     password: 'WeAreMongoose'
 };
-
 
 describe('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));

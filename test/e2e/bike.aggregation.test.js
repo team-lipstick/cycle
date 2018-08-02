@@ -80,10 +80,12 @@ describe('Bikes Aggregation API', () => {
             .then(({ body }) => {
                 assert.deepEqual(body, [{
                     _id : 'Fathom',
+                    available: 1,
                     price: 1400
                 },
                 {
                     _id: 'Emonda',
+                    available: 1,
                     price: 11299
                 }]);
             });
@@ -117,6 +119,24 @@ describe('Bikes Aggregation API', () => {
                 },
                 {
                     _id: 'road',
+                    model: 'Emonda',
+                    price: 11299
+                }]);
+            });
+    });
+
+    it('gets bike models by year with price', () => {
+        return request
+            .get('/api/bikes/years')
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, [{
+                    _id : 2016,
+                    model: 'Fathom',
+                    price: 1400
+                },
+                {
+                    _id: 2017,
                     model: 'Emonda',
                     price: 11299
                 }]);

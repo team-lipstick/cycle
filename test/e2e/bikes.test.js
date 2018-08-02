@@ -46,6 +46,7 @@ const monGoosey = {
 describe('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
+    
 
     beforeEach(() => {
         return request
@@ -96,7 +97,7 @@ describe('Bikes API', () => {
         }, token)
             .then(data => giant = data);
     });
-
+    
     it('saves a bike', () => {
         assert.isOk(trek._id);
     });

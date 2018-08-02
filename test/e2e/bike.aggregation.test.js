@@ -122,4 +122,22 @@ describe('Bikes Aggregation API', () => {
                 }]);
             });
     });
+
+    it('gets bike models by year with price', () => {
+        return request
+            .get('/api/bikes/years')
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, [{
+                    _id : 2016,
+                    model: 'Fathom',
+                    price: 1400
+                },
+                {
+                    _id: 2017,
+                    model: 'Emonda',
+                    price: 11299
+                }]);
+            });
+    });
 });

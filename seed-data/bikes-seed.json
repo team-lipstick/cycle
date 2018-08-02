@@ -8,7 +8,6 @@
         "year": 2017,
         "price": 11299,
         "speeds": 11,
-        "gender": "womans",
         "type": "road",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5ca"
@@ -24,7 +23,6 @@
         "year": 2015,
         "price": 5000,
         "speeds": 51,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cb"
@@ -40,7 +38,6 @@
         "year": 2012,
         "price": 2000,
         "speeds": 51,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cb"
@@ -56,7 +53,6 @@
         "year": 2014,
         "price": 6000,
         "speeds": 51,
-        "gender": "mens",
         "type": "trail",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cb"
@@ -72,10 +68,129 @@
         "year": 2016,
         "price": 1400,
         "speeds": 21,
-        "gender": "mens",
         "type": "road",
         "owner": {
             "$oid": "5b60af4a0962d456fab3c5cc"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633551c64943ed999194c9"
+        },
+        "manufacturer": "Huffy",
+        "model": "Alpine",
+        "year": 2015,
+        "price": 800,
+        "speeds": 18,
+        "type": "trail",
+        "owner": {
+            "$oid": "5b6334ae3afe3eed4058a5d3"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633551c64943ed999194ca"
+        },
+        "manufacturer": "Diamondback",
+        "model": "Airen",
+        "year": 2015,
+        "price": 800,
+        "speeds": 18,
+        "type": "road",
+        "owner": {
+            "$oid": "5b6334ae3afe3eed4058a5d2"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633d222a4ed0f1877495d8"
+        },
+        "manufacturer": "Raleigh",
+        "model": "Addison",
+        "year": 2016,
+        "price": 700,
+        "speeds": 18,
+        "type": "road",
+        "owner": {
+            "$oid": "5b6334ae3afe3eed4058a5d1"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633d222a4ed0f1877495d9"
+        },
+        "manufacturer": "Specialized",
+        "model": "Stumpjumper",
+        "year": 2018,
+        "price": 3000,
+        "speeds": 21,
+        "type": "trail",
+        "owner": {
+            "$oid": "5b6334ae3afe3eed4058a5d0"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633f4665c197f2a6c7589c"
+        },
+        "manufacturer": "Cannondale",
+        "model": "Habit",
+        "year": 2018,
+        "price": 2000,
+        "speeds": 18,
+        "type": "trail",
+        "owner": {
+            "$oid": "5b6334ae3afe3eed4058a5cf"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633f4665c197f2a6c7589d"
+        },
+        "manufacturer": "GT Bikes",
+        "model": "Transeo",
+        "year": 2018,
+        "price": 500,
+        "speeds": 18,
+        "type": "road",
+        "owner": {
+            "$oid": "5b6334ae3afe3eed4058a5ce"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633f4665c197f2a6c7589e"
+        },
+        "manufacturer": "GT Bikes",
+        "model": "Avalanche",
+        "year": 2018,
+        "price": 750,
+        "speeds": 18,
+        "type": "trail",
+        "owner": {
+            "$oid": "5b6334ae3afe3eed4058a5cd"
+        },
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b633f4665c197f2a6c7589f"
+        },
+        "manufacturer": "Santa Cruz",
+        "model": "Nomad",
+        "year": 2017,
+        "price": 3600,
+        "speeds": 18,
+        "type": "trail",
+        "owner": {
+            "$oid": "5b6334ad3afe3eed4058a5cc"
         },
         "__v": 0
     }

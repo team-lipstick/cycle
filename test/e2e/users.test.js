@@ -20,7 +20,6 @@ const bikey = {
     password: 'myFaceIsABike',
 };
 
-
 describe('Users API', () => {
     beforeEach(() => dropCollection('users'));
 
@@ -59,7 +58,6 @@ describe('Users API', () => {
             .get('/api/users')
             .then(checkOk)
             .then(({ body }) => {
-                
                 assert.deepEqual(body, [user, userTwo]);
             });
     });

@@ -21,7 +21,9 @@
     "db:load:bikes": "mongoimport --drop --db cycle --collection bikes --jsonArray --file ./seed-data/bikes-seed.json",
     "db:load:all": "npm run db:load:users && npm run db:load:bikes",
     "db:load-users-heroku": "mongoimport -h ds163781.mlab.com:63781 -d heroku_j45qh1g9 -c users -u heroku_j45qh1g9 -p n12pc0m9tp345ao3af2jblbt2c --jsonArray --drop --file ./lib/seed-data/users-data.json",
-    "db:load-bikes-heroku": "mongoimport -h ds163781.mlab.com:63781 -d heroku_j45qh1g9 -c bikes -u heroku_j45qh1g9 -p n12pc0m9tp345ao3af2jblbt2c --jsonArray --drop --file ./lib/seed-data/bikes-data.json"
+    "db:load-bikes-heroku": "mongoimport -h ds163781.mlab.com:63781 -d heroku_j45qh1g9 -c bikes -u heroku_j45qh1g9 -p n12pc0m9tp345ao3af2jblbt2c --jsonArray --drop --file ./lib/seed-data/bikes-data.json",
+    "db:load-sales-heroku": "mongoimport -h ds163781.mlab.com:63781 -d heroku_j45qh1g9 -c sales -u heroku_j45qh1g9 -p n12pc0m9tp345ao3af2jblbt2c --jsonArray --drop --file ./lib/seed-data/sales-data.json",
+    "db:load-all-heroku": "npm run db:load-users-heroku && npm run db:load-bikes-heroku && npm run db:load-sales-heroku"
   },
   "repository": {
     "type": "git",

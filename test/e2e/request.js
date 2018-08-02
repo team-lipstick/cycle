@@ -64,6 +64,5 @@ module.exports = {
     save,
     addOffer,
     checkOk,
-    simplify,
-    makeSimple
+    simplify
 };

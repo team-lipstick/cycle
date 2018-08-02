@@ -80,10 +80,12 @@ describe('Bikes Aggregation API', () => {
             .then(({ body }) => {
                 assert.deepEqual(body, [{
                     _id : 'Fathom',
+                    available: 1,
                     price: 1400
                 },
                 {
                     _id: 'Emonda',
+                    available: 1,
                     price: 11299
                 }]);
             });

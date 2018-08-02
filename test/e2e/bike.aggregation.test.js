@@ -104,25 +104,7 @@ describe('Bikes Aggregation API', () => {
                 }]);
             });
     });
-
-    it('gets bike models by gender with price', () => {
-        return request
-            .get('/api/bikes/genders')
-            .then(checkOk)
-            .then(({ body }) => {
-                assert.deepEqual(body, [{
-                    _id : 'mens',
-                    model: 'Fathom',
-                    price: 1400
-                },
-                {
-                    _id: 'womans',
-                    model: 'Emonda',
-                    price: 11299
-                }]);
-            });
-    });
-
+    
     it('gets bike models by type with price', () => {
         return request
             .get('/api/bikes/types')

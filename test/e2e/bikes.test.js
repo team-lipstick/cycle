@@ -10,7 +10,6 @@ const makeSimple = (bike, user) => {
         year: bike.year,
         price: bike.price,
         speeds: bike.speeds,
-        gender: bike.gender,
         type: bike.type
     };
 

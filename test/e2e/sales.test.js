@@ -1,9 +1,10 @@
 const { assert } = require('chai');
 const { dropCollection } = require('./db');
-const { checkOk, save, request, makeSimple } = require('./request');
+const { checkOk, save, request } = require('./request');
 
 let exampleSale;
 let exampleUserOne;
+let exampleUserTwo;
 let exampleBike;
 let token;
 let tokenTwo;
@@ -13,8 +14,51 @@ const userOne = {
     email: 'bikey@bikeface.com',
     password: 'myFaceIsABike'
 };
+const userTwo = {
+    name: 'Bikey McBikeface',
+    email: 'bikey@bikeface.com',
+    password: 'myFaceIsABike'
+};
 
-describe('Sale API', () => {
+const makeSimple = (sale, bike) => {
+    const simple = {
+        _id: sale._id,
+        offers: sale.offers,
+        sold: sale.sold
+    };
+
+    if(bike) {
+        simple.bike = {
+            _id: bike._id,
+            manufacturer: bike.manufacturer,
+            model: bike.model,
+            price: bike.price,
+            speeds: bike.speeds,
+            type: bike.type,
+            year: bike.year
+        };
+    }
+    return simple;
+};
+const makeSimpleGetAll = (sale, bike) => {
+    const simple = {
+        _id: sale._id,
+        offers: sale.offers,
+        sold: sale.sold
+    };
+
+    if(bike) {
+        simple.bike = {
+            _id: bike._id,
+            manufacturer: bike.manufacturer,
+            model: bike.model,
+            price: bike.price
+        };
+    }
+    return simple;
+};
+
+describe.only('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');
@@ -31,6 +75,17 @@ describe('Sale API', () => {
                 token = body.token;
             });
     });
+
+    // beforeEach(() => {
+    //     return request
+    //         .post('/api/auth/signup')
+    //         .send(userTwo)
+    //         .then(checkOk)
+    //         .then(({ body }) => {
+    //             exampleUserTwo = body.user;
+    //             tokenTwo = body.token;
+    //         });
+    // });
         
     beforeEach(() => {
         return save('bikes',
@@ -74,7 +129,7 @@ describe('Sale API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 delete exampleSale.__v;
-                assert.deepEqual(body, [makeSimple(exampleSale, exampleBike)]);
+                assert.deepEqual(body, [makeSimpleGetAll(exampleSale, exampleBike)]);
             });
     });
 

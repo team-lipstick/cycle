@@ -2,7 +2,7 @@ const { assert } = require('chai');
 const { request, save, checkOk } = require('./request');
 const { dropCollection } = require('./db');
 
-const makeSimple = (bike, user) => {
+const makeSimpleById = (bike, user) => {
     const simple = {
         _id: bike._id,
         manufacturer: bike.manufacturer,
@@ -11,6 +11,23 @@ const makeSimple = (bike, user) => {
         price: bike.price,
         speeds: bike.speeds,
         type: bike.type
+    };
+
+    if(user) {
+        simple.owner = {
+            _id: user._id,
+            name: user.name
+        };
+    }
+    return simple;
+};
+const makeSimpleForGetAll = (bike, user) => {
+    const simple = {
+        _id: bike._id,
+        manufacturer: bike.manufacturer,
+        model: bike.model,
+        year: bike.year,
+        price: bike.price,
     };
 
     if(user) {
@@ -106,7 +123,7 @@ describe('Bikes API', () => {
             .get(`/api/bikes/${trek._id}`)
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, makeSimple(trek, user));
+                assert.deepEqual(body, makeSimpleById(trek, user));
             });     
     });
         
@@ -115,7 +132,7 @@ describe('Bikes API', () => {
             .get('/api/bikes')
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [makeSimple(trek, user), makeSimple(giant, user)]);
+                assert.deepEqual(body, [makeSimpleForGetAll(trek, user), makeSimpleForGetAll(giant, user)]);
             });
     });
      

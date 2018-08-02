@@ -4,7 +4,6 @@ const { checkOk, save, request } = require('./request');
 
 let exampleSale;
 let exampleUserOne;
-let exampleUserTwo;
 let exampleBike;
 let token;
 let tokenTwo;
@@ -58,7 +57,7 @@ const makeSimpleGetAll = (sale, bike) => {
     return simple;
 };
 
-describe.only('Sale API', () => {
+describe('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');
@@ -82,7 +81,6 @@ describe.only('Sale API', () => {
             .send(userTwo)
             .then(checkOk)
             .then(({ body }) => {
-                exampleUserTwo = body.user;
                 tokenTwo = body.token;
             });
     });
@@ -190,7 +188,6 @@ describe.only('Sale API', () => {
             .put(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
             .set('Authorization', tokenTwo)
             .send(exampleSale)
-            // .then(checkOk)
             .then(res => {
                 assert.equal(res.body.error, 'Invalid user');
                 assert.equal(res.status, 403);

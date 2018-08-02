@@ -6,6 +6,7 @@ let exampleSale;
 let exampleUserOne;
 let exampleBike;
 let token;
+let tokenTwo;
 
 const userOne = {
     name: 'Bikey McBikeface',

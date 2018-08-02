@@ -1,9 +1,12 @@
 const { assert } = require('chai');
-const { request, checkOk } = require('./request');
+const { request, checkOk, save } = require('./request');
 const { dropCollection } = require('./db');
 
 let token;
 let user;
+let trek;
+let giant;
+
 // eslint-disable-next-line
 let tokenTwo;
 let userTwo;
@@ -22,6 +25,7 @@ const bikey = {
 
 describe('Users API', () => {
     beforeEach(() => dropCollection('users'));
+    beforeEach(() => dropCollection('bikes'));
 
     beforeEach(() => {
         return request
@@ -43,6 +47,34 @@ describe('Users API', () => {
                 tokenTwo = body.token;
                 userTwo = body.user;
             });
+    });
+
+    beforeEach(() => {
+        return save('bikes', {
+            manufacturer: 'Trek',
+            model: 'Emonda',
+            year: 2017,
+            price: 11299,
+            speeds: 11,
+            gender: 'womans',
+            type: 'Road',
+            owner: userTwo._id
+        }, token)
+            .then(bike => trek = bike);
+    });
+
+    beforeEach(() => {
+        return save('bikes', {
+            manufacturer: 'Giant',
+            model: 'Fathom',
+            year: 2016,
+            price: 1400,
+            speeds: 21,
+            gender: 'mens',
+            type: 'trail',
+            owner: userTwo._id
+        }, token)
+            .then(bike => giant = bike);      
     });
         
     it('signs up a user', () => {
@@ -71,6 +103,15 @@ describe('Users API', () => {
                 assert.deepEqual(body, user);
             });
     });
+
+    it('it gets all bikes owned by user', () => {
+        return request
+            .get(`/api/users/${userTwo._id}/bikes`)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, [trek, giant]);     
+            });
+    });
         
     it('updates a user', () => {
         user.email = 'mongoose666@mongeese.com';
@@ -83,7 +124,7 @@ describe('Users API', () => {
                 assert.deepEqual(body.email, user.email);
             });
     });
-
+    
     it('prevents user from updating a different user', () => {
         user.email = 'gooseymon@geese.com';
         return request
@@ -110,4 +151,5 @@ describe('Users API', () => {
                 assert.deepEqual(body, [userTwo]);
             });
     });
+
 });

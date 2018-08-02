@@ -16,7 +16,7 @@ const userOne = {
 };
 const userTwo = {
     name: 'Bikey McBikeface',
-    email: 'bikey@bikeface.com',
+    email: 'Keybi@bikeface.com',
     password: 'myFaceIsABike'
 };
 
@@ -76,16 +76,16 @@ describe.only('Sale API', () => {
             });
     });
 
-    // beforeEach(() => {
-    //     return request
-    //         .post('/api/auth/signup')
-    //         .send(userTwo)
-    //         .then(checkOk)
-    //         .then(({ body }) => {
-    //             exampleUserTwo = body.user;
-    //             tokenTwo = body.token;
-    //         });
-    // });
+    beforeEach(() => {
+        return request
+            .post('/api/auth/signup')
+            .send(userTwo)
+            .then(checkOk)
+            .then(({ body }) => {
+                exampleUserTwo = body.user;
+                tokenTwo = body.token;
+            });
+    });
         
     beforeEach(() => {
         return save('bikes',
@@ -166,7 +166,7 @@ describe.only('Sale API', () => {
         exampleSale.sold = true;
         
         return request
-            .put(`/api/sales/${exampleSale._id}`)
+            .put(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
             .set('Authorization', token)
             .send(exampleSale)
             .then(checkOk)
@@ -180,6 +180,20 @@ describe.only('Sale API', () => {
                     .then(({ body }) => {
                         assert.deepEqual(body, []);
                     });
+            });
+    });
+    
+    it('ensures only owner can change sold field of sale', () => {
+        exampleSale.sold = true;
+        
+        return request
+            .put(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .set('Authorization', tokenTwo)
+            .send(exampleSale)
+            // .then(checkOk)
+            .then(res => {
+                assert.equal(res.body.error, 'Invalid user');
+                assert.equal(res.status, 403);
             });
     });
 

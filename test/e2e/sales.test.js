@@ -177,7 +177,7 @@ describe('Sale API', () => {
             });
     });
 
-    it.only('prevents user from posting sale of bike they don\'t own', () => {
+    it('prevents user from posting sale of bike they don\'t own', () => {
         return request
             .post('/api/sales')
             .set('Authorization', tokenThree)
@@ -225,7 +225,7 @@ describe('Sale API', () => {
                     .get('/api/bikes')
                     .then(checkOk)
                     .then(({ body }) => {
-                        assert.deepEqual(body.length, 1);
+                        assert.deepEqual(body.length, 2);
                     });
             });
     });
@@ -237,13 +237,28 @@ describe('Sale API', () => {
         };
         return request
             .post(`/api/sales/${exampleSale._id}/offers`)
-            .set('Authorization', token)
+            .set('Authorization', tokenThree)
             .send(data)
             .then(checkOk)
             .then(({ body }) => {
                 assert.equal(body.offers.length, 2);
                 assert.deepEqual(body.offers[1].offer, 200);
                 assert.deepEqual(body.offers[0].contact, exampleUserTwo._id);
+            });
+    });
+
+    it.only('prevents owner from adding offer', () => {
+        const data = {
+            contact: exampleUserOne._id,
+            offer: 200
+        };
+        return request
+            .post(`/api/sales/${exampleSale._id}/offers`)
+            .set('Authorization', token)
+            .send(data)
+            .then(res => {
+                assert.equal(res.status, 403);
+                assert.equal(res.body.error, 'Invalid user');
             });
     });
 });

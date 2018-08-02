@@ -144,7 +144,7 @@ describe('Sale API', () => {
 
     it('deletes a sale', () => {
         return request
-            .delete(`/api/sales/${exampleSale._id}`)
+            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
             .set('Authorization', token)
             .then(checkOk)
             .then(({ body }) => {
@@ -157,6 +157,16 @@ describe('Sale API', () => {
                     .then(({ body }) => {
                         assert.deepEqual(body, []);
                     });
+            });
+    });
+
+    it('ensures only seller can delete own sale', () => {
+        return request
+            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .set('Authorization', tokenTwo)
+            .then(res  => {
+                assert.equal(res.body.error, 'Invalid user');
+                assert.equal(res.status, 403);
             });
     });
 

@@ -46,7 +46,7 @@ const monGoosey = {
 };
 
 
-describe.only('Bikes API', () => {
+describe('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
     

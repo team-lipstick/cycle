@@ -1,16 +1,29 @@
 const inquirer = require('inquirer');
 
-const prompt = [
+const authQuestions = [
+    {
+        type: 'list',
+        name: 'authorization',
+        choices: [
+            { name: 'Sign In', value: 'signIn' },
+            { name: 'Sign Up', value: 'signUp' }
+        ]
+    },
     {
         type: 'input',
         name: 'name',
-        message: 'Enter your username:'
+        message: 'Enter your name'
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'Enter your email'
     },
     {
         type: 'password',
         name: 'password',
         mask: '*',
-        message: 'Enter your password:',
+        message: 'Enter your password'
     }
 ];
 
@@ -23,11 +36,12 @@ class Cycle {
 
     start() {
         inquirer
-            .prompt(prompt)
-            .then(({ name, password }) => {
-                if(this.signup) return this.api.signup({ name, password });
-                else return this.api.signin({ name, password });
-            });
+            .prompt(authQuestions)
+            .then(({ name, email, password }) => {
+                if(this.signup) return this.api.signup({ name, email, password });
+                else return this.api.signin({ name, email, password });
+            })
+            .catch(console.log); //eslint-disable-line
     }
 }
 

@@ -1,33 +1,55 @@
 const { assert } = require('chai');
-const { request } = require('./request');
+const { request, save, checkOk } = require('./request');
 const { dropCollection } = require('./db');
-const { checkOk } = request;
+
+const makeSimple = (bike, user) => {
+    const simple = {
+        _id: bike._id,
+        manufacturer: bike.manufacturer,
+        model: bike.model,
+        year: bike.year,
+        price: bike.price,
+        speeds: bike.speeds,
+        gender: bike.gender,
+        type: bike.type
+    };
+
+    if(user) {
+        simple.owner = {
+            _id: user._id,
+            name: user.name
+        };
+    }
+    return simple;
+};
+
+let trek;
+let giant;
+// eslint-disable-next-line
+let token;
+let user;
+let tokenTwo;
+
+// eslint-disable-next-line
+let userTwo;
+
+const bikeyMcBikeface = {
+    name: 'Bikey McBikeface',
+    email: 'bikey@bikeface.com',
+    password: 'myFaceIsABike',
+};
+
+const monGoosey = {
+    name: 'Mon Goosey',
+    email: 'goose@geese.com',
+    password: 'WeAreMongoose'
+};
+
 
 describe.only('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
-
-    let trek;
-    let giant;
-    let huffy;
-    // eslint-disable-next-line
-    let token;
-    let user;
     
-    const bikeyMcBikeface = {
-        name: 'Bikey McBikeface',
-        email: 'bikey@bikeface.com',
-        password: 'myFaceIsABike',
-    };
-    
-    function saveBike(bike) {
-        return request
-            .post('/api/bikes')
-            .set('Authorization', token)
-            .send(bike)
-            .then(checkOk)
-            .then(({ body }) => body);    
-    }
 
     beforeEach(() => {
         return request
@@ -41,7 +63,18 @@ describe.only('Bikes API', () => {
     });
 
     beforeEach(() => {
-        return saveBike({
+        return request
+            .post('/api/auth/signup')
+            .send(monGoosey)
+            .then(checkOk)
+            .then(({ body }) => {
+                tokenTwo = body.token;
+                userTwo = body.user;
+            });
+    });
+
+    beforeEach(() => {
+        return save('bikes', {
             manufacturer: 'Trek',
             model: 'Emonda',
             year: 2017,
@@ -50,12 +83,12 @@ describe.only('Bikes API', () => {
             gender: 'womans',
             type: 'Road',
             owner: user._id
-        })
+        }, token)
             .then(data => trek = data);
     });
 
     beforeEach(() => {
-        return saveBike({
+        return save('bikes', {
             manufacturer: 'Giant',
             model: 'Fathom',
             year: 2016,
@@ -64,24 +97,10 @@ describe.only('Bikes API', () => {
             gender: 'mens',
             type: 'trail',
             owner: user._id
-        })
+        }, token)
             .then(data => giant = data);
     });
-    // For Creating Mock Bike Data
-    // beforeEach(() => {
-    //     return saveBike({
-    //         manufacturer: 'Huffy',
-    //         model: 'Alpine',
-    //         year: 2015,
-    //         price: 800,
-    //         speeds: 18,
-    //         gender: 'mens',
-    //         type: 'trail',
-    //         owner: user._id
-    //     })
-    //         .then(data => huffy = data);
-    // });
-
+    
     it('saves a bike', () => {
         assert.isOk(trek._id);
     });
@@ -91,7 +110,7 @@ describe.only('Bikes API', () => {
             .get(`/api/bikes/${trek._id}`)
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, trek);
+                assert.deepEqual(body, makeSimple(trek, user));
             });     
     });
         
@@ -100,10 +119,10 @@ describe.only('Bikes API', () => {
             .get('/api/bikes')
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [trek, giant]);
+                assert.deepEqual(body, [makeSimple(trek, user), makeSimple(giant, user)]);
             });
     });
-        
+     
     it('updates a bike', () => {
         trek.price = 10000;
         return request  
@@ -113,6 +132,17 @@ describe.only('Bikes API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 assert.deepEqual(body.price, 10000);
+            });
+    });
+
+    it('prevents user from updating someone else\'s bike', () => {
+        trek.price = 5000;
+        return request
+            .put(`/api/bikes/${trek._id}`)
+            .set('Authorization', tokenTwo)
+            .then(res => {
+                assert.equal(res.status, 403);
+                assert.equal(res.body.error, 'Invalid user');
             });
     });
         
@@ -129,5 +159,15 @@ describe.only('Bikes API', () => {
             .then(({ body }) => {
                 assert.deepEqual(body.length, 1);
             });    
+    });
+
+    it('prevents user from deleting someone else\'s bike', () => {
+        return request
+            .delete(`/api/bikes/${giant._id}`)
+            .set('Authorization', tokenTwo)
+            .then(res => {
+                assert.equal(res.status, 403);
+                assert.equal(res.body.error, 'Invalid user');
+            });
     });
 });

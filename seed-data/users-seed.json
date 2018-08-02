@@ -25,5 +25,77 @@
         "email": "thecyclinator@wheelies.org",
         "hash": "$2a$08$CrsWs3JYYUd7z6JEaYipNuMfxNFLkWZXPPaZEam8EyOkghpPBTUhi",
         "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ae3afe3eed4058a5d3"
+        },
+        "name": "Chip Ellsworth III",
+        "email": "chip@verbadwizards.com",
+        "hash": "$2a$08$CsPZGht84pPTLJau7GJKZeZshKOo24nkh5OU2dfV.8dHJf.ajAm8K",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ae3afe3eed4058a5d2"
+        },
+        "name": "Tyrone Payton",
+        "email": "tyrone@verbadwizards.com",
+        "hash": "$2a$08$Fx4y6pqNEmnQNMfV0g85huh6flr6K0Nk143nupY/wWD.yHlxESf.C",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ae3afe3eed4058a5d1"
+        },
+        "name": "John Johnson",
+        "email": "johnny@johnson.com",
+        "hash": "$2a$08$6c/o50pdE81KH3B63jystuehMr12m3Ksq.xSfHaDNTlZMBgUDqVf.",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ae3afe3eed4058a5d0"
+        },
+        "name": "Molly Ringwald",
+        "email": "molly@vbitchinbikes.com",
+        "hash": "$2a$08$XLnsZq/3TGqCe/GLnZMtpucVAz3dqTbeM3fVYu0dCu7DR9AeTp73O",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ae3afe3eed4058a5cf"
+        },
+        "name": "Deana Troy",
+        "email": "deana@enterprise.com",
+        "hash": "$2a$08$rumknm4jAXElUncppyDMwu6ospsJIVkbpLAtsJ8ee5oshxYD4/G/G",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ae3afe3eed4058a5ce"
+        },
+        "name": "Megan Nelson",
+        "email": "megan@acl.com",
+        "hash": "$2a$08$vYYHg6J12wTj0H2JmWtIce6Jea.1o2vCDd7xouNS7s4Dea2fGWhU.",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ae3afe3eed4058a5cd"
+        },
+        "name": "Marty Nelson",
+        "email": "marty@acl.com",
+        "hash": "$2a$08$v6qSyFE7cDhmrpzlDzA0wO8igSnDUSkVgSA4aLzc7apWvPz8n8Nf6",
+        "__v": 0
+    },
+    {
+        "_id": {
+            "$oid": "5b6334ad3afe3eed4058a5cc"
+        },
+        "name": "Fred Flintstone",
+        "email": "fred@sticksnstones.com",
+        "hash": "$2a$08$Xs6dpooaGmKUoLwbezpRDeMojeRTEaJYkrqPYbDsz8rp832GefdAi",
+        "__v": 0
     }
 ]

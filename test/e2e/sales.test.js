@@ -13,7 +13,6 @@ let exampleUserTwo;
 let exampleUserThree;
 let token;
 let tokenTwo;
-// eslint-disable-next-line
 let tokenThree;
 
 const userOne = {
@@ -34,7 +33,7 @@ const userThree = {
     password: 'cyclecycle'
 };
 
-describe('Sale API', () => {
+describe.only('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');
@@ -247,7 +246,7 @@ describe('Sale API', () => {
             });
     });
 
-    it.only('prevents owner from adding offer', () => {
+    it('prevents owner from adding offer', () => {
         const data = {
             contact: exampleUserOne._id,
             offer: 200

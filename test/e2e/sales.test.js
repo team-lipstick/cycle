@@ -1,16 +1,60 @@
 const { assert } = require('chai');
 const { dropCollection } = require('./db');
-const { checkOk, save, request, makeSimple } = require('./request');
+const { checkOk, save, request } = require('./request');
 
 let exampleSale;
 let exampleUserOne;
 let exampleBike;
 let token;
+let tokenTwo;
 
 const userOne = {
     name: 'Bikey McBikeface',
     email: 'bikey@bikeface.com',
     password: 'myFaceIsABike'
+};
+const userTwo = {
+    name: 'Bikey McBikeface',
+    email: 'Keybi@bikeface.com',
+    password: 'myFaceIsABike'
+};
+
+const makeSimple = (sale, bike) => {
+    const simple = {
+        _id: sale._id,
+        offers: sale.offers,
+        sold: sale.sold
+    };
+
+    if(bike) {
+        simple.bike = {
+            _id: bike._id,
+            manufacturer: bike.manufacturer,
+            model: bike.model,
+            price: bike.price,
+            speeds: bike.speeds,
+            type: bike.type,
+            year: bike.year
+        };
+    }
+    return simple;
+};
+const makeSimpleGetAll = (sale, bike) => {
+    const simple = {
+        _id: sale._id,
+        offers: sale.offers,
+        sold: sale.sold
+    };
+
+    if(bike) {
+        simple.bike = {
+            _id: bike._id,
+            manufacturer: bike.manufacturer,
+            model: bike.model,
+            price: bike.price
+        };
+    }
+    return simple;
 };
 
 describe('Sale API', () => {
@@ -28,6 +72,16 @@ describe('Sale API', () => {
             .then(({ body }) => {
                 exampleUserOne = body.user;
                 token = body.token;
+            });
+    });
+
+    beforeEach(() => {
+        return request
+            .post('/api/auth/signup')
+            .send(userTwo)
+            .then(checkOk)
+            .then(({ body }) => {
+                tokenTwo = body.token;
             });
     });
         
@@ -73,7 +127,7 @@ describe('Sale API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 delete exampleSale.__v;
-                assert.deepEqual(body, [makeSimple(exampleSale, exampleBike)]);
+                assert.deepEqual(body, [makeSimpleGetAll(exampleSale, exampleBike)]);
             });
     });
 
@@ -90,7 +144,7 @@ describe('Sale API', () => {
 
     it('deletes a sale', () => {
         return request
-            .delete(`/api/sales/${exampleSale._id}`)
+            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
             .set('Authorization', token)
             .then(checkOk)
             .then(({ body }) => {
@@ -106,11 +160,21 @@ describe('Sale API', () => {
             });
     });
 
+    it('ensures only seller can delete own sale', () => {
+        return request
+            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .set('Authorization', tokenTwo)
+            .then(res  => {
+                assert.equal(res.body.error, 'Invalid user');
+                assert.equal(res.status, 403);
+            });
+    });
+
     it('updates sold field and removes sold bike', () => {
         exampleSale.sold = true;
         
         return request
-            .put(`/api/sales/${exampleSale._id}`)
+            .put(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
             .set('Authorization', token)
             .send(exampleSale)
             .then(checkOk)
@@ -124,6 +188,19 @@ describe('Sale API', () => {
                     .then(({ body }) => {
                         assert.deepEqual(body, []);
                     });
+            });
+    });
+    
+    it('ensures only owner can change sold field of sale', () => {
+        exampleSale.sold = true;
+        
+        return request
+            .put(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .set('Authorization', tokenTwo)
+            .send(exampleSale)
+            .then(res => {
+                assert.equal(res.body.error, 'Invalid user');
+                assert.equal(res.status, 403);
             });
     });
 

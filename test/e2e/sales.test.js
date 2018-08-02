@@ -7,6 +7,7 @@ let exampleSale;
 let exampleSaleTwo;
 let exampleBike;
 let exampleBikeTwo;
+let exampleBikeThree;
 let exampleUserOne;
 let exampleUserTwo;
 let exampleUserThree;
@@ -33,7 +34,7 @@ const userThree = {
     password: 'cyclecycle'
 };
 
-describe.only('Sale API', () => {
+describe('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');
@@ -104,6 +105,22 @@ describe.only('Sale API', () => {
                 exampleBikeTwo = bike;
             });
     });
+        
+    beforeEach(() => {
+        return save('bikes',
+            {
+                manufacturer: 'Happy',
+                model: 'Fastly',
+                year: 2010,
+                price: 1129,
+                speeds: 15,
+                type: 'Mountain',
+                owner: exampleUserTwo._id
+            }, tokenTwo)
+            .then(bike => {
+                exampleBikeThree = bike;
+            });
+    });
     
     beforeEach(() => {
         return save('sales', 
@@ -160,8 +177,18 @@ describe.only('Sale API', () => {
             });
     });
 
-    it('prevents user from posting sale of bike they don\'t own', () => {
-        
+    it.only('prevents user from posting sale of bike they don\'t own', () => {
+        return request
+            .post('/api/sales')
+            .set('Authorization', tokenThree)
+            .send({
+                bike: exampleBikeThree._id,
+                offers: []
+            })
+            .then(res => {
+                assert.equal(res.status, 403);
+                assert.equal(res.body.error, 'Invalid user');
+            });
     });
 
     it('deletes a sale', () => {

@@ -31,6 +31,7 @@ const makeSimple = (sale, bike) => {
     if(bike) {
         simple.bike = {
             _id: bike._id,
+            manufacturer: bike.manufacturer,
             model: bike.model,
             price: bike.price
         };

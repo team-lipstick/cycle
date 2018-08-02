@@ -6,10 +6,19 @@ let exampleSale;
 let exampleUserOne;
 let exampleBike;
 let token;
+let exampleUserTwo;
+// eslint-disable-next-line
+let tokenTwo;
 
 const userOne = {
     name: 'Bikey McBikeface',
     email: 'bikey@bikeface.com',
+    password: 'myFaceIsABike'
+};
+
+const userTwo = {
+    name: 'Mon Goosey',
+    email: 'bey@face.com',
     password: 'myFaceIsABike'
 };
 
@@ -28,6 +37,17 @@ describe('Sale API', () => {
             .then(({ body }) => {
                 exampleUserOne = body.user;
                 token = body.token;
+            });
+    });
+    
+    beforeEach(() => {
+        return request
+            .post('/api/auth/signup')
+            .send(userTwo)
+            .then(checkOk)
+            .then(({ body }) => {
+                exampleUserTwo = body.user;
+                tokenTwo = body.token;
             });
     });
         
@@ -53,8 +73,12 @@ describe('Sale API', () => {
             {
                 bike: exampleBike._id,
                 offers: [{
-                    email: exampleUserOne._id,
+                    contact: exampleUserOne._id,
                     offer: 50
+                },
+                {
+                    contact: exampleUserTwo._id,
+                    offer: 800
                 }]
             }, token)
             .then(sale => {
@@ -67,18 +91,15 @@ describe('Sale API', () => {
     });
 
     it('gets all sales', () => {
-        
         return request
             .get('/api/sales')
             .then(checkOk)
             .then(({ body }) => {
-                delete exampleSale.__v;
-                assert.deepEqual(body, [makeSimple(exampleSale, exampleBike)]);
+                assert.equal(body[0].offers.length, 2);
             });
     });
 
     it('gets a sale by id', () => {
-    
         return request
             .get(`/api/sales/${exampleSale._id}`)
             .then(checkOk)
@@ -129,7 +150,7 @@ describe('Sale API', () => {
 
     it('adds offer to offers field', () => {
         const data = {
-            email: exampleUserOne._id,
+            contact: exampleUserOne._id,
             offer: 200
         };
         return request
@@ -138,9 +159,9 @@ describe('Sale API', () => {
             .send(data)
             .then(checkOk)
             .then(({ body }) => {
-                assert.equal(body.offers.length, 2);
-                assert.deepEqual(200, body.offers[1].offer);
-                assert.deepEqual(exampleUserOne._id, body.offers[0].email);
+                assert.equal(body.offers.length, 3);
+                assert.deepEqual(200, body.offers[2].offer);
+                assert.deepEqual(exampleUserOne._id, body.offers[0].contact);
             });
     });
 });

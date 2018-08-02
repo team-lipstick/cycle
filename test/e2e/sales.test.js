@@ -3,12 +3,17 @@ const { dropCollection } = require('./db');
 const { checkOk, save, request, makeSimple } = require('./request');
 
 let exampleSale;
-let exampleUserOne;
-let exampleBike;
-let token;
-let exampleUserTwo;
 // eslint-disable-next-line
+let exampleSaleTwo;
+let exampleBike;
+let exampleBikeTwo;
+let exampleUserOne;
+let exampleUserTwo;
+let exampleUserThree;
+let token;
 let tokenTwo;
+// eslint-disable-next-line
+let tokenThree;
 
 const userOne = {
     name: 'Bikey McBikeface',
@@ -22,7 +27,13 @@ const userTwo = {
     password: 'myFaceIsABike'
 };
 
-describe('Sale API', () => {
+const userThree = {
+    name: 'Cycley Wheelmeister',
+    email: 'cycle@cycle.com',
+    password: 'cyclecycle'
+};
+
+describe.only('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');
@@ -50,6 +61,33 @@ describe('Sale API', () => {
                 tokenTwo = body.token;
             });
     });
+    
+    beforeEach(() => {
+        return request
+            .post('/api/auth/signup')
+            .send(userThree)
+            .then(checkOk)
+            .then(({ body }) => {
+                exampleUserThree = body.user;
+                tokenThree = body.token;
+            });
+    });
+        
+    beforeEach(() => {
+        return save('bikes',
+            {
+                manufacturer: 'Pojo',
+                model: 'Awesome',
+                year: 2015,
+                price: 1199,
+                speeds: 1,
+                type: 'Road',
+                owner: exampleUserOne._id
+            }, token)
+            .then(bike => {
+                exampleBike = bike;
+            });
+    });
         
     beforeEach(() => {
         return save('bikes',
@@ -59,12 +97,11 @@ describe('Sale API', () => {
                 year: 2017,
                 price: 11299,
                 speeds: 11,
-                gender: 'womans',
                 type: 'Road',
-                owner: exampleUserOne._id
-            }, token)
+                owner: exampleUserTwo._id
+            }, tokenTwo)
             .then(bike => {
-                exampleBike = bike;
+                exampleBikeTwo = bike;
             });
     });
     
@@ -73,16 +110,30 @@ describe('Sale API', () => {
             {
                 bike: exampleBike._id,
                 offers: [{
-                    contact: exampleUserOne._id,
-                    offer: 50
-                },
-                {
                     contact: exampleUserTwo._id,
-                    offer: 800
+                    offer: 50
                 }]
             }, token)
             .then(sale => {
                 exampleSale = sale;
+            });
+    });
+    
+    beforeEach(() => {
+        return save('sales', 
+            {
+                bike: exampleBikeTwo._id,
+                offers: [{
+                    contact: exampleUserOne._id,
+                    offer: 900
+                },
+                {
+                    contact: exampleUserThree._id,
+                    offer: 12
+                }]
+            }, tokenTwo)
+            .then(sale => {
+                exampleSaleTwo = sale;
             });
     });
 
@@ -95,7 +146,7 @@ describe('Sale API', () => {
             .get('/api/sales')
             .then(checkOk)
             .then(({ body }) => {
-                assert.equal(body[0].offers.length, 2);
+                assert.equal(body[0].offers.length, 1);
             });
     });
 
@@ -107,6 +158,10 @@ describe('Sale API', () => {
                 delete body.bike.owner;
                 assert.deepEqual(body, makeSimple(exampleSale, exampleBike));
             });
+    });
+
+    it('prevents user from posting sale of bike they don\'t own', () => {
+        
     });
 
     it('deletes a sale', () => {
@@ -122,7 +177,7 @@ describe('Sale API', () => {
                     .get('/api/sales')
                     .then(checkOk)
                     .then(({ body }) => {
-                        assert.deepEqual(body, []);
+                        assert.equal(body.length, 1);
                     });
             });
     });
@@ -143,14 +198,14 @@ describe('Sale API', () => {
                     .get('/api/bikes')
                     .then(checkOk)
                     .then(({ body }) => {
-                        assert.deepEqual(body, []);
+                        assert.deepEqual(body.length, 1);
                     });
             });
     });
 
     it('adds offer to offers field', () => {
         const data = {
-            contact: exampleUserOne._id,
+            contact: exampleUserThree._id,
             offer: 200
         };
         return request
@@ -159,9 +214,9 @@ describe('Sale API', () => {
             .send(data)
             .then(checkOk)
             .then(({ body }) => {
-                assert.equal(body.offers.length, 3);
-                assert.deepEqual(200, body.offers[2].offer);
-                assert.deepEqual(exampleUserOne._id, body.offers[0].contact);
+                assert.equal(body.offers.length, 2);
+                assert.deepEqual(body.offers[1].offer, 200);
+                assert.deepEqual(body.offers[0].contact, exampleUserTwo._id);
             });
     });
 });

@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 const { dropCollection } = require('./db');
-const { checkOk, save, request } = require('./request');
+const { checkOk, save, request, makeSimple } = require('./request');
 
 let exampleSale;
 // eslint-disable-next-line
@@ -20,49 +20,6 @@ const userOne = {
     email: 'bikey@bikeface.com',
     password: 'myFaceIsABike'
 };
-const userTwo = {
-    name: 'Bikey McBikeface',
-    email: 'Keybi@bikeface.com',
-    password: 'myFaceIsABike'
-};
-
-const makeSimple = (sale, bike) => {
-    const simple = {
-        _id: sale._id,
-        offers: sale.offers,
-        sold: sale.sold
-    };
-
-    if(bike) {
-        simple.bike = {
-            _id: bike._id,
-            manufacturer: bike.manufacturer,
-            model: bike.model,
-            price: bike.price,
-            speeds: bike.speeds,
-            type: bike.type,
-            year: bike.year
-        };
-    }
-    return simple;
-};
-const makeSimpleGetAll = (sale, bike) => {
-    const simple = {
-        _id: sale._id,
-        offers: sale.offers,
-        sold: sale.sold
-    };
-
-    if(bike) {
-        simple.bike = {
-            _id: bike._id,
-            manufacturer: bike.manufacturer,
-            model: bike.model,
-            price: bike.price
-        };
-    }
-    return simple;
-};
 
 const userTwo = {
     name: 'Mon Goosey',
@@ -76,7 +33,7 @@ const userThree = {
     password: 'cyclecycle'
 };
 
-describe.only('Sale API', () => {
+describe('Sale API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');

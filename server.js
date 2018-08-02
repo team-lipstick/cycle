@@ -2,12 +2,12 @@ const http = require('http');
 const app = require('./lib/app');
 const connect = require('./lib/util/connect');
 
-connect('mongodb://localhost:27017/cycle');
+connect(process.env.MONGODB_URI);
 
 const server = http.createServer(app);
-const PORT = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
+server.listen(port, () => {
     // eslint-disable-next-line
-    console.log('Server on', PORT);
+    console.log('Server on', port);
 });

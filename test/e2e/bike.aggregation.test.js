@@ -2,6 +2,7 @@ const { assert } = require('chai');
 const { request } = require('./request');
 const { dropCollection } = require('./db');
 const { checkOk } = request;
+const tokenService = require('../../lib/util/token-service');
 
 describe('Bikes Aggregation API', () => {
     beforeEach(() => dropCollection('bikes'));
@@ -35,7 +36,8 @@ describe('Bikes Aggregation API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 token = body.token;
-                user = body.user;
+                tokenService.verify(token)
+                    .then(body => user = body);
             });
     });
 
@@ -47,7 +49,7 @@ describe('Bikes Aggregation API', () => {
             price: 11299,
             speeds: 11,
             type: 'road',
-            owner: user._id
+            owner: user.id
         })
             .then(data => trek = data);
     });
@@ -60,7 +62,7 @@ describe('Bikes Aggregation API', () => {
             price: 1400,
             speeds: 21,
             type: 'trail',
-            owner: user._id
+            owner: user.id
         })
             .then(data => giant = data);
     });

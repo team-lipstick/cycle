@@ -3,13 +3,13 @@ const { getErrors } = require('./helper');
 const Sale = require('../../lib/models/sale');
 const { Types } = require('mongoose');
 
-describe.only('Sale model', () => {
+describe('Sale model', () => {
 
     it('validates good model', () => {
         const data = {
             bike: Types.ObjectId(),
             offers: [{
-                email:  Types.ObjectId(),
+                contact:  Types.ObjectId(),
                 offer: 100
             }],
             sold: false
@@ -49,7 +49,7 @@ describe.only('Sale model', () => {
         };
 
         const sale = new Sale(data);
-        const errors = getErrors(sale.validateSync(), 1);
+        const errors = getErrors(sale.validateSync(), 2);
         assert.equal(errors['offers.0.offer'].kind, 'min');
     });
 });

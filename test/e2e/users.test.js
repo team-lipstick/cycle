@@ -6,6 +6,8 @@ let token;
 let user;
 let trek;
 let giant;
+let exampleSale;
+let exampleSaleTwo;
 
 // eslint-disable-next-line
 let tokenTwo;
@@ -23,9 +25,14 @@ const bikey = {
     password: 'myFaceIsABike',
 };
 
-describe('Users API', () => {
-    beforeEach(() => dropCollection('users'));
-    beforeEach(() => dropCollection('bikes'));
+describe.only('Users API', () => {
+    beforeEach(() => {
+        dropCollection('users');
+        dropCollection('bikes');
+        dropCollection('sales');
+    });
+
+
 
     beforeEach(() => {
         return request
@@ -76,6 +83,38 @@ describe('Users API', () => {
         }, token)
             .then(bike => giant = bike);      
     });
+
+    // beforeEach(() => {
+    //     return save('sales', 
+    //         {
+    //             bike: trek._id,
+    //             offers: [{
+    //                 contact: user._id,
+    //                 offer: 50
+    //             }]
+    //         }, token)
+    //         .then(sale => {
+    //             exampleSale = sale;
+    //         });
+    // });
+    
+    beforeEach(() => {
+        return save('sales', 
+            {
+                bike: trek._id,
+                offers: [{
+                    contact: user._id,
+                    offer: 900
+                },
+                {
+                    contact: user._id,
+                    offer: 12
+                }]
+            }, tokenTwo)
+            .then(sale => {
+                exampleSaleTwo = sale;
+            });
+    });
         
     it('signs up a user', () => {
         assert.isDefined(token);
@@ -109,7 +148,16 @@ describe('Users API', () => {
             .get(`/api/users/${userTwo._id}/bikes`)
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [trek, giant]);     
+                assert.deepEqual(body, [trek, giant]);
+            });
+    });
+
+    it('it gets all sales owned by user', () => {
+        return request
+            .get(`/api/users/${userTwo._id}/sales`)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, [exampleSaleTwo]);
             });
     });
         

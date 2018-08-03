@@ -1,6 +1,7 @@
 const { assert } = require('chai');
 const { dropCollection } = require('./db');
 const { checkOk, save, request, makeSimple } = require('./request');
+const tokenService = require('../../lib/util/token-service');
 
 let exampleSale;
 // eslint-disable-next-line
@@ -46,8 +47,9 @@ describe('Sale API', () => {
             .send(userOne)
             .then(checkOk)
             .then(({ body }) => {
-                exampleUserOne = body.user;
                 token = body.token;
+                tokenService.verify(token)
+                    .then(userBody => exampleUserOne = userBody);
             });
     });
 
@@ -57,8 +59,9 @@ describe('Sale API', () => {
             .send(userTwo)
             .then(checkOk)
             .then(({ body }) => {
-                exampleUserTwo = body.user;
                 tokenTwo = body.token;
+                tokenService.verify(tokenTwo)
+                    .then(userBody => exampleUserTwo = userBody);
             });
     });
     
@@ -68,8 +71,9 @@ describe('Sale API', () => {
             .send(userThree)
             .then(checkOk)
             .then(({ body }) => {
-                exampleUserThree = body.user;
                 tokenThree = body.token;
+                tokenService.verify(tokenThree)
+                    .then(userBody => exampleUserThree = userBody);
             });
     });
         
@@ -82,7 +86,7 @@ describe('Sale API', () => {
                 price: 1199,
                 speeds: 1,
                 type: 'Road',
-                owner: exampleUserOne._id
+                owner: exampleUserOne.id
             }, token)
             .then(bike => {
                 exampleBike = bike;
@@ -98,7 +102,7 @@ describe('Sale API', () => {
                 price: 11299,
                 speeds: 11,
                 type: 'Road',
-                owner: exampleUserTwo._id
+                owner: exampleUserTwo.id
             }, tokenTwo)
             .then(bike => {
                 exampleBikeTwo = bike;
@@ -114,7 +118,7 @@ describe('Sale API', () => {
                 price: 1129,
                 speeds: 15,
                 type: 'Mountain',
-                owner: exampleUserTwo._id
+                owner: exampleUserTwo.id
             }, tokenTwo)
             .then(bike => {
                 exampleBikeThree = bike;
@@ -126,7 +130,7 @@ describe('Sale API', () => {
             {
                 bike: exampleBike._id,
                 offers: [{
-                    contact: exampleUserTwo._id,
+                    contact: exampleUserTwo.id,
                     offer: 50
                 }]
             }, token)
@@ -140,11 +144,11 @@ describe('Sale API', () => {
             {
                 bike: exampleBikeTwo._id,
                 offers: [{
-                    contact: exampleUserOne._id,
+                    contact: exampleUserOne.id,
                     offer: 900
                 },
                 {
-                    contact: exampleUserThree._id,
+                    contact: exampleUserThree.id,
                     offer: 12
                 }]
             }, tokenTwo)
@@ -192,7 +196,7 @@ describe('Sale API', () => {
 
     it('deletes a sale', () => {
         return request
-            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne.id}`)
             .set('Authorization', token)
             .then(checkOk)
             .then(({ body }) => {
@@ -210,7 +214,7 @@ describe('Sale API', () => {
 
     it('ensures only seller can delete own sale', () => {
         return request
-            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .delete(`/api/sales/${exampleSale._id}/${exampleUserOne.id}`)
             .set('Authorization', tokenTwo)
             .then(res  => {
                 assert.equal(res.body.error, 'Invalid user');
@@ -222,7 +226,7 @@ describe('Sale API', () => {
         exampleSale.sold = true;
         
         return request
-            .put(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .put(`/api/sales/${exampleSale._id}/${exampleUserOne.id}`)
             .set('Authorization', token)
             .send(exampleSale)
             .then(checkOk)
@@ -243,7 +247,7 @@ describe('Sale API', () => {
         exampleSale.sold = true;
         
         return request
-            .put(`/api/sales/${exampleSale._id}/${exampleUserOne._id}`)
+            .put(`/api/sales/${exampleSale._id}/${exampleUserOne.id}`)
             .set('Authorization', tokenTwo)
             .send(exampleSale)
             .then(res => {
@@ -254,7 +258,7 @@ describe('Sale API', () => {
 
     it('adds offer to offers field', () => {
         const data = {
-            contact: exampleUserThree._id,
+            contact: exampleUserThree.id,
             offer: 200
         };
         return request
@@ -265,13 +269,13 @@ describe('Sale API', () => {
             .then(({ body }) => {
                 assert.equal(body.offers.length, 2);
                 assert.deepEqual(body.offers[1].offer, 200);
-                assert.deepEqual(body.offers[0].contact, exampleUserTwo._id);
+                assert.deepEqual(body.offers[0].contact, exampleUserTwo.id);
             });
     });
 
     it('prevents owner from adding offer', () => {
         const data = {
-            contact: exampleUserOne._id,
+            contact: exampleUserOne.id,
             offer: 200
         };
         return request

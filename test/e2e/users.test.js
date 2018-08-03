@@ -1,6 +1,7 @@
 const { assert } = require('chai');
 const { request, checkOk, save } = require('./request');
 const { dropCollection } = require('./db');
+const tokenService = require('../../lib/util/token-service');
 
 const saleSimple = (sale, bike) => {
     const simple = {};
@@ -22,7 +23,6 @@ let user;
 let trek;
 let giant;
 let exampleSale;
-
 // eslint-disable-next-line
 let tokenTwo;
 let userTwo;
@@ -53,7 +53,8 @@ describe('Users API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 token = body.token;
-                user = body.user;
+                tokenService.verify(token)
+                    .then(userBody => user = userBody);
             });
     });
 
@@ -64,7 +65,8 @@ describe('Users API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 tokenTwo = body.token;
-                userTwo = body.user;
+                tokenService.verify(tokenTwo)
+                    .then(userBody => userTwo = userBody);
             });
     });
 
@@ -76,7 +78,7 @@ describe('Users API', () => {
             price: 11299,
             speeds: 11,
             type: 'Road',
-            owner: userTwo._id
+            owner: userTwo.id
         }, token)
             .then(bike => trek = bike);
     });
@@ -89,7 +91,7 @@ describe('Users API', () => {
             price: 1400,
             speeds: 21,
             type: 'trail',
-            owner: userTwo._id
+            owner: userTwo.id
         }, token)
             .then(bike => giant = bike);      
     });
@@ -109,7 +111,7 @@ describe('Users API', () => {
     });
         
     it('signs in a user', () => {
-        assert.isOk(user._id);
+        assert.isOk(user.id);
     });
         
     it('gets a list of users', () => {
@@ -117,13 +119,13 @@ describe('Users API', () => {
             .get('/api/users')
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [user, userTwo]);
+                assert.equal(body.length, 2);
             });
     });
         
     it('gets a user by id', () => {
         return request
-            .get(`/api/users/${user._id}`)
+            .get(`/api/users/${user.id}`)
             .then(checkOk)
             .then(({ body }) => {
                 user = body;
@@ -137,7 +139,7 @@ describe('Users API', () => {
         delete giant.owner;
         delete giant.__v;
         return request
-            .get(`/api/users/${userTwo._id}/bikes`)
+            .get(`/api/users/${userTwo.id}/bikes`)
             .then(checkOk)
             .then(({ body }) => {
                 assert.deepEqual(body, [trek, giant]);
@@ -146,7 +148,7 @@ describe('Users API', () => {
 
     it('it gets all sales owned by user', () => {
         return request
-            .get(`/api/users/${userTwo._id}/sales`)
+            .get(`/api/users/${userTwo.id}/sales`)
             .then(checkOk)
             .then(({ body }) => {
                 assert.deepEqual(body, [saleSimple(exampleSale, trek)]);
@@ -154,21 +156,25 @@ describe('Users API', () => {
     });
         
     it('updates a user', () => {
-        user.email = 'mongoose666@mongeese.com';
         return request
-            .put(`/api/users/${user._id}`)
+            .put(`/api/users/${user.id}`)
             .set('Authorization', token)
-            .send(user)
+            .send({
+                _id: user.id,
+                name: 'Mon Goosey',
+                email: 'hello@mongeese.com',
+                password: 'iAmMongooseHearMeRoar'
+            })
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body.email, user.email);
+                assert.deepEqual(body.email, 'hello@mongeese.com');
             });
     });
     
     it('prevents user from updating a different user', () => {
         user.email = 'gooseymon@geese.com';
         return request
-            .put(`/api/users/${user._id}`)
+            .put(`/api/users/${user.id}`)
             .set('Authorization', tokenTwo)
             .then(res => {
                 assert.equal(res.status, 403);
@@ -178,7 +184,7 @@ describe('Users API', () => {
     
     it('deletes a user', () => {
         return request  
-            .delete(`/api/users/${user._id}`)
+            .delete(`/api/users/${user.id}`)
             .set('Authorization', token)
             .then(checkOk)
             .then(res => {
@@ -188,8 +194,7 @@ describe('Users API', () => {
             })
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [userTwo]);
+                assert.equal(body.length, 1);
             });
     });
-
 });

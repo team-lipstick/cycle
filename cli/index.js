@@ -1,6 +1,6 @@
 const Cycle = require('./cycle');
 const request = require('superagent');
-const API_URL = 'mongodb://localhost:27017/cycle/api';
+const API_URL = 'http://localhost:3000/api';
 
 // eslint-disable-next-line
 let token = '';

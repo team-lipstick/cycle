@@ -27,11 +27,23 @@ const authQuestions = [
     }
 ];
 
+const firstQuestions = [
+    {
+        type: 'list',
+        name: 'Welcome!',
+        choices: [
+            { name: 'Browse bikes', value: 'getBike' },
+            { name: 'Post a bike', value: 'postbikes' }
+        ]
+    }
+];
+
 class Cycle {
     constructor(api) {
         this.api = api;
         this.signup = false;
         this.token;
+        this.bikes = [];
     }
 
     start() {
@@ -39,9 +51,20 @@ class Cycle {
             .prompt(authQuestions)
             .then(({ name, email, password }) => {
                 if(this.signup) return this.api.signup({ name, email, password });
-                else return this.api.signin({ name, email, password });
+                // else return this.api.signin({ name, email, password });
             })
-            .catch(console.log); //eslint-disable-line
+            .then(() => {
+                inquirer
+                    .prompt(firstQuestions)
+                    .then(({ answer }) => {
+                        if(answer === 'getBike') return this.api.getBike()
+                            .then(bikes => {
+                                console.log(bikes);
+                                this.bikes = bikes;
+                                console.log(this.bikes);
+                            });
+                    });
+            });
     }
 }
 

@@ -2,12 +2,26 @@ const { assert } = require('chai');
 const { request, checkOk, save } = require('./request');
 const { dropCollection } = require('./db');
 
+const saleSimple = (sale, bike) => {
+    const simple = {};
+    simple._id = sale._id;
+    simple.bike = {
+        _id: bike._id,
+        manufacturer: bike.manufacturer,
+        model: bike.model,
+        price: bike.price
+    };
+    simple.offers = sale.offers;
+    simple.sold = sale.sold;
+
+    return simple;
+};
+
 let token;
 let user;
 let trek;
 let giant;
 let exampleSale;
-let exampleSaleTwo;
 
 // eslint-disable-next-line
 let tokenTwo;
@@ -25,14 +39,12 @@ const bikey = {
     password: 'myFaceIsABike',
 };
 
-describe.only('Users API', () => {
+describe('Users API', () => {
     beforeEach(() => {
         dropCollection('users');
         dropCollection('bikes');
         dropCollection('sales');
     });
-
-
 
     beforeEach(() => {
         return request
@@ -83,36 +95,14 @@ describe.only('Users API', () => {
         }, token)
             .then(bike => giant = bike);      
     });
-
-    // beforeEach(() => {
-    //     return save('sales', 
-    //         {
-    //             bike: trek._id,
-    //             offers: [{
-    //                 contact: user._id,
-    //                 offer: 50
-    //             }]
-    //         }, token)
-    //         .then(sale => {
-    //             exampleSale = sale;
-    //         });
-    // });
     
     beforeEach(() => {
         return save('sales', 
             {
                 bike: trek._id,
-                offers: [{
-                    contact: user._id,
-                    offer: 900
-                },
-                {
-                    contact: user._id,
-                    offer: 12
-                }]
             }, tokenTwo)
             .then(sale => {
-                exampleSaleTwo = sale;
+                exampleSale = sale;
             });
     });
         
@@ -144,6 +134,10 @@ describe.only('Users API', () => {
     });
 
     it('it gets all bikes owned by user', () => {
+        delete trek.owner;
+        delete trek.__v;
+        delete giant.owner;
+        delete giant.__v;
         return request
             .get(`/api/users/${userTwo._id}/bikes`)
             .then(checkOk)
@@ -157,7 +151,7 @@ describe.only('Users API', () => {
             .get(`/api/users/${userTwo._id}/sales`)
             .then(checkOk)
             .then(({ body }) => {
-                assert.deepEqual(body, [exampleSaleTwo]);
+                assert.deepEqual(body, [saleSimple(exampleSale, trek)]);
             });
     });
         

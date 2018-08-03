@@ -193,5 +193,4 @@ describe('Users API', () => {
                 assert.deepEqual(body, [userTwo]);
             });
     });
-
 });

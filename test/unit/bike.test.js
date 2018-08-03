@@ -12,7 +12,6 @@ describe('Bike model', () => {
             year: 2017,
             price: 11299,
             speeds: 11,
-            gender: 'Womans',
             type: 'Road',
             owner: Types.ObjectId()
         };
@@ -27,13 +26,12 @@ describe('Bike model', () => {
 
     it('validates all required fields', () => {
         const bike = new Bike({});
-        const errors = getErrors(bike.validateSync(), 8);
+        const errors = getErrors(bike.validateSync(), 7);
         assert.equal(errors.manufacturer.kind, 'required');
         assert.equal(errors.model.kind, 'required');
         assert.equal(errors.year.kind, 'required');
         assert.equal(errors.price.kind, 'required');
         assert.equal(errors.speeds.kind, 'required');
-        assert.equal(errors.gender.kind, 'required');
         assert.equal(errors.type.kind, 'required');
         assert.equal(errors.owner.kind, 'required');
     });

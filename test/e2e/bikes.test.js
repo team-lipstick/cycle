@@ -1,6 +1,7 @@
 const { assert } = require('chai');
 const { request, save, checkOk } = require('./request');
 const { dropCollection } = require('./db');
+const tokenService = require('../../lib/util/token-service');
 
 const makeSimpleById = (bike, user) => {
     const simple = {
@@ -15,8 +16,8 @@ const makeSimpleById = (bike, user) => {
 
     if(user) {
         simple.owner = {
-            _id: user._id,
-            name: user.name
+            _id: user.id,
+            name: 'Bikey McBikeface'
         };
     }
     return simple;
@@ -32,8 +33,8 @@ const makeSimpleForGetAll = (bike, user) => {
 
     if(user) {
         simple.owner = {
-            _id: user._id,
-            name: user.name
+            _id: user.id,
+            name: 'Bikey McBikeface'
         };
     }
     return simple;
@@ -63,7 +64,6 @@ const monGoosey = {
 describe('Bikes API', () => {
     beforeEach(() => dropCollection('bikes'));
     beforeEach(() => dropCollection('users'));
-    
 
     beforeEach(() => {
         return request
@@ -72,7 +72,8 @@ describe('Bikes API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 token = body.token;
-                user = body.user;
+                tokenService.verify(token)
+                    .then(userBody => user = userBody);
             });
     });
 
@@ -83,7 +84,8 @@ describe('Bikes API', () => {
             .then(checkOk)
             .then(({ body }) => {
                 tokenTwo = body.token;
-                userTwo = body.user;
+                tokenService.verify(tokenTwo)
+                    .then(userBody => userTwo = userBody);
             });
     });
 
@@ -95,7 +97,7 @@ describe('Bikes API', () => {
             price: 11299,
             speeds: 11,
             type: 'Road',
-            owner: user._id
+            owner: user.id
         }, token)
             .then(data => trek = data);
     });
@@ -108,7 +110,7 @@ describe('Bikes API', () => {
             price: 1400,
             speeds: 21,
             type: 'trail',
-            owner: user._id
+            owner: user.id
         }, token)
             .then(data => giant = data);
     });

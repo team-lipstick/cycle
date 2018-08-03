@@ -75,7 +75,6 @@ describe('Users API', () => {
             year: 2017,
             price: 11299,
             speeds: 11,
-            gender: 'womans',
             type: 'Road',
             owner: userTwo._id
         }, token)
@@ -89,7 +88,6 @@ describe('Users API', () => {
             year: 2016,
             price: 1400,
             speeds: 21,
-            gender: 'mens',
             type: 'trail',
             owner: userTwo._id
         }, token)

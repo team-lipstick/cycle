@@ -197,5 +197,4 @@ describe('Users API', () => {
                 assert.equal(body.length, 1);
             });
     });
-
 });

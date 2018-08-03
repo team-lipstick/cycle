@@ -1,9 +1,28 @@
 const { assert } = require('chai');
-const { request, checkOk } = require('./request');
+const { request, checkOk, save } = require('./request');
 const { dropCollection } = require('./db');
+
+const saleSimple = (sale, bike) => {
+    const simple = {};
+    simple._id = sale._id;
+    simple.bike = {
+        _id: bike._id,
+        manufacturer: bike.manufacturer,
+        model: bike.model,
+        price: bike.price
+    };
+    simple.offers = sale.offers;
+    simple.sold = sale.sold;
+
+    return simple;
+};
 
 let token;
 let user;
+let trek;
+let giant;
+let exampleSale;
+
 // eslint-disable-next-line
 let tokenTwo;
 let userTwo;
@@ -21,7 +40,11 @@ const bikey = {
 };
 
 describe('Users API', () => {
-    beforeEach(() => dropCollection('users'));
+    beforeEach(() => {
+        dropCollection('users');
+        dropCollection('bikes');
+        dropCollection('sales');
+    });
 
     beforeEach(() => {
         return request
@@ -42,6 +65,44 @@ describe('Users API', () => {
             .then(({ body }) => {
                 tokenTwo = body.token;
                 userTwo = body.user;
+            });
+    });
+
+    beforeEach(() => {
+        return save('bikes', {
+            manufacturer: 'Trek',
+            model: 'Emonda',
+            year: 2017,
+            price: 11299,
+            speeds: 11,
+            gender: 'womans',
+            type: 'Road',
+            owner: userTwo._id
+        }, token)
+            .then(bike => trek = bike);
+    });
+
+    beforeEach(() => {
+        return save('bikes', {
+            manufacturer: 'Giant',
+            model: 'Fathom',
+            year: 2016,
+            price: 1400,
+            speeds: 21,
+            gender: 'mens',
+            type: 'trail',
+            owner: userTwo._id
+        }, token)
+            .then(bike => giant = bike);      
+    });
+    
+    beforeEach(() => {
+        return save('sales', 
+            {
+                bike: trek._id,
+            }, tokenTwo)
+            .then(sale => {
+                exampleSale = sale;
             });
     });
         
@@ -71,6 +132,28 @@ describe('Users API', () => {
                 assert.deepEqual(body, user);
             });
     });
+
+    it('it gets all bikes owned by user', () => {
+        delete trek.owner;
+        delete trek.__v;
+        delete giant.owner;
+        delete giant.__v;
+        return request
+            .get(`/api/users/${userTwo._id}/bikes`)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, [trek, giant]);
+            });
+    });
+
+    it('it gets all sales owned by user', () => {
+        return request
+            .get(`/api/users/${userTwo._id}/sales`)
+            .then(checkOk)
+            .then(({ body }) => {
+                assert.deepEqual(body, [saleSimple(exampleSale, trek)]);
+            });
+    });
         
     it('updates a user', () => {
         user.email = 'mongoose666@mongeese.com';
@@ -83,7 +166,7 @@ describe('Users API', () => {
                 assert.deepEqual(body.email, user.email);
             });
     });
-
+    
     it('prevents user from updating a different user', () => {
         user.email = 'gooseymon@geese.com';
         return request
@@ -110,4 +193,5 @@ describe('Users API', () => {
                 assert.deepEqual(body, [userTwo]);
             });
     });
+
 });

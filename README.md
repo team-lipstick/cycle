@@ -1,6 +1,8 @@
 Cycle
 =====
 
+// initial commit
+
 Re-commerce back end app for buying and selling bicycles. It was written using Mongoose/Node/Express, and tested with Mocha/Chai.
 
 ## Get Started
